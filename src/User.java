@@ -2,7 +2,14 @@ public class User {
 
     private String uniqueID;
     private String password;
+    private boolean onlineStatus;
     
+    public boolean isOnlineStatus() {
+        return onlineStatus;
+    }
+    public void setOnlineStatus(boolean onlineStatus) {
+        this.onlineStatus = onlineStatus;
+    }
     public String getUniqueID() {
         return uniqueID;
     }
@@ -20,4 +27,5 @@ public class User {
         }
         this.password = password;
     }
+    
 }
