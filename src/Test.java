@@ -9,6 +9,10 @@ public class Test {
 			j++;
 		}
 //testing
+		
+		for (int i = 0; i < 10; i++) {
+			System.out.println("This hopefully still works after the push");
+		}
 	}
 
 }
