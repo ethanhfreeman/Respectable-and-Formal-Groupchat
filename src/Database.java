@@ -28,6 +28,24 @@ public class Database {
         }
 
     }
+
+	public static void update(String tableName, String columnName, int id, String newValue){
+		try{
+			c.setAutoCommit(false);
+			stmt = c.createStatement();
+			String sql = "UPDATE " + tableName + " set " + columnName + " = " + newValue + " where ID = " + id + ";";
+			stmt.executeUpdate(sql);
+			c.commit();
+
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.err.println(e.getClass().getName() + ": " + e.getMessage());
+			System.exit(0);
+		}
+	}
+
+
 	public static void select(String tableName) {
 		try {
 			stmt = c.createStatement();
