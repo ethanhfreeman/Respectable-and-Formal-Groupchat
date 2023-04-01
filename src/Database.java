@@ -5,7 +5,7 @@ public class Database {
     private static java.sql.Connection c = null;
 	private static Statement stmt = null;
 
-    public static void Connect(String tableName) throws Exception {
+    public static void connect(String tableName) throws Exception {
         try {
 			String localUserName = null;
 			String localPassword = null;
