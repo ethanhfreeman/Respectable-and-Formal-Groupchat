@@ -1,5 +1,7 @@
 
 import java.sql.*;
+import java.util.Locale;
+
 public class Database {
 
     private static java.sql.Connection c = null;
@@ -7,12 +9,7 @@ public class Database {
 
     public static void connect(String tableName) throws Exception {
         try {
-			String localUserName = null;
-			String localPassword = null;
-			/*
-			 *
-			*/
-            String url = "jdbc:postgresql://localhost/" + tableName + "?user=postgres&password=1234&ssl=false";
+            String url = "jdbc:postgresql://localhost/" + tableName + "?user=" + localHostInfo.getLocalUserName() + "&password=" + localHostInfo.getLocalPassword() +"&ssl=false";
             //TODO change these parameters to suit your localhost username and password
             /*
              * Above, you need to insert the "tableName" portion of the url
