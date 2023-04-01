@@ -10,7 +10,7 @@ public class Database {
     public static void connect(String tableName) throws Exception {
         try {
             String url = "jdbc:postgresql://localhost/" + tableName + "?user=" + localHostInfo.getLocalUserName() + "&password=" + localHostInfo.getLocalPassword() +"&ssl=false";
-            //TODO change these parameters to suit your localhost username and password
+            //TODO change parameters in localHostInfo.java to suit your localhost username and password
             /*
              * Above, you need to insert the "tableName" portion of the url
              * to specify the database in which you are looking to connect to
