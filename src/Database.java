@@ -5,19 +5,21 @@ public class Database {
     private static java.sql.Connection c = null;
 	private static Statement stmt = null;
 
-    public static void Connect() throws Exception {
+    public static void Connect(String tableName) throws Exception {
         try {
-            String url = "jdbc:postgresql://localhost/temp2?user=postgres&password=1234&ssl=false";
+			String localUserName = null;
+			String localPassword = null;
+			/*
+			 *
+			*/
+            String url = "jdbc:postgresql://localhost/" + tableName + "?user=postgres&password=1234&ssl=false";
             //TODO change these parameters to suit your localhost username and password
             /*
-             * Above, you need to change the "temp2" portion of the url
+             * Above, you need to insert the "tableName" portion of the url
              * to specify the database in which you are looking to connect to
              * previously this was just postgres, which just connects you to postgresql.
-             * This being specified to temp2, essentially does  "\c temp2" and then the subsequent
+             * This being specified to tableName, essentially does  "\c tableName" and then the subsequent
              * methods like 'select()' work.
-             * 
-             * This probably needs to be parameterized in the long run, as we won't always be
-             * connecting to a hard-coded destination such as "temp2"
              */
             c = DriverManager.getConnection(url);
             System.out.println("Connected :)");
