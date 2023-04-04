@@ -30,13 +30,6 @@ public class Database {
 
 	public static void createTable(){
 
-		try{
-			String sql =
-		}
-		catch{
-
-		}
-
 
 
 	}
