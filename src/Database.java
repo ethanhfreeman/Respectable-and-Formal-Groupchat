@@ -31,7 +31,7 @@ public class Database {
 	public static void createTable(){
 
 		try{
-			String sql = 
+			String sql =
 		}
 		catch{
 
