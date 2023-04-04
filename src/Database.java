@@ -46,7 +46,8 @@ public class Database {
 		try{
 			c.setAutoCommit(false);
 			stmt = c.createStatement();
-			String sql = "UPDATE " + tableName + " set " + columnName + " = " + newValue + " where ID = " + id + ";";
+			String sql = "UPDATE " + tableName + " set " + columnName + " = '" + newValue + "' where ID = " + id + ";";
+			System.out.println(sql);
 			stmt.executeUpdate(sql);
 			c.commit();
 
@@ -75,7 +76,6 @@ public class Database {
 			System.out.println("Done...");
 			rs.close();
 			stmt.close();
-			c.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.err.println(e.getClass().getName() + ": " + e.getMessage());
