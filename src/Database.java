@@ -28,6 +28,20 @@ public class Database {
 
     }
 
+	public static void createTable(){
+
+
+
+	}
+
+	public static void insert(){
+		
+	}
+
+	public static void delete(){
+
+	}
+
 	public static void update(String tableName, String columnName, int id, String newValue){
 		try{
 			c.setAutoCommit(false);
