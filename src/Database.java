@@ -34,12 +34,36 @@ public class Database {
 
 	}
 
-	public static void insert(){
-		
+	public static void insert(String tableName, int id, String username, String password){
+		try{
+			c.setAutoCommit(false);
+			stmt = c.createStatement();
+			String sql = "INSERT INTO " + tableName + "(id, username, password)" +
+					"VALUES(" + id + ", '" + username + "', '" + password +"');" ;
+			stmt.executeUpdate(sql);
+			c.commit();
+			System.out.println("User created :)");
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.err.println(e.getClass().getName() + ": " + e.getMessage());
+			System.exit(0);
+		}
 	}
 
-	public static void delete(){
+	public static void delete(String tableName, int id){
+		try{
+			c.setAutoCommit(false);
+			stmt = c.createStatement();
+			String sql = "DELETE FROM " + tableName + " WHERE id = " + id;
+			stmt.executeUpdate(sql);
+			c.commit();
 
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.err.println(e.getClass().getName() + ": " + e.getMessage());
+			System.exit(0);
+		}
 	}
 
 	public static void update(String tableName, String columnName, int id, String newValue){
@@ -66,7 +90,8 @@ public class Database {
 			ResultSet rs = stmt.executeQuery("select * from " + tableName + ";");
 			while (rs.next()) {
 				int id = rs.getInt("id");
-				String username = rs.getString("name");
+				//TODO Change the column label of 'String username' back to "name" to avoid conflicts
+				String username = rs.getString("username");
 				//String password = rs.getString("age");
 				
 				System.out.println("ID: " + id);
