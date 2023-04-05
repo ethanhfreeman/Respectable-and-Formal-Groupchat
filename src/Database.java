@@ -34,8 +34,21 @@ public class Database {
 
 	}
 
-	public static void insert(){
-		
+	public static void insert(String tableName, int id, String username, String password){
+		try{
+			c.setAutoCommit(false);
+			stmt = c.createStatement();
+			String sql = "INSERT INTO " + tableName + "(id, username, password)" +
+					"VALUES(" + id + ", '" + username + "', '" + password +"');" ;
+			stmt.executeUpdate(sql);
+			c.commit();
+			System.out.println("User created :)");
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.err.println(e.getClass().getName() + ": " + e.getMessage());
+			System.exit(0);
+		}
 	}
 
 	public static void delete(String tableName, int id){
