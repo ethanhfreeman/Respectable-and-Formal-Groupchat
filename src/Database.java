@@ -59,19 +59,24 @@ public class Database {
 		}
 	}
 
-
+/* **************SELECT METHOD DOCUMENTATION*****************
+ * Select method works as long as you have the database created
+ * named "usersdb" and that you have a table called "userinfo"
+ * which has columns (ID int primary key, username char(20), password char(20))
+ * 
+ */
 	public static void select(String tableName) {
 		try {
 			stmt = c.createStatement();
 			ResultSet rs = stmt.executeQuery("select * from " + tableName + ";");
 			while (rs.next()) {
 				int id = rs.getInt("id");
-				String username = rs.getString("name");
-				//String password = rs.getString("age");
+				String username = rs.getString("username");
+				String password = rs.getString("password");
 				
 				System.out.println("ID: " + id);
 				System.out.println("USER: " + username);
-				//System.out.println("PASS: " + password);
+				System.out.println("PASS: " + password);
 			}
 			System.out.println("Done...");
 			rs.close();
