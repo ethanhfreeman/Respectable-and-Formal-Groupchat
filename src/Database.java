@@ -27,9 +27,29 @@ public class Database {
         }
 
     }
-
+/*
+ * ****CREATETABLE DOCUMENTATION ****
+ * Currently this method will create the userinfo table
+ * without any issues. If the table exists, no changes
+ * will be made to the userinfo table. If it does not
+ * already exist, it will create a new table called
+ * "userinfo"
+ */
 	public static void createTable(){
-
+		try {
+			stmt = c.createStatement();
+			String sql = "CREATE TABLE IF NOT EXISTS userinfo" +
+			"(ID INT PRIMARY KEY NOT NULL, " +
+				"USERNAME CHAR(25) NOT NULL," +
+					"PASSWORD CHAR(25) NOT NULL);";
+			stmt.executeUpdate(sql);
+			stmt.close();
+			System.out.println("Table has been created");
+		} catch(Exception e) {
+			e.printStackTrace();
+            System.err.println(e.getClass().getName() + ": " + e.getMessage());
+            System.exit(0);
+		}
 
 
 	}
