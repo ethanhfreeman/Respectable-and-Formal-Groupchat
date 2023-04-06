@@ -1,5 +1,6 @@
 
 import java.sql.*;
+import java.util.Locale;
 
 public class Database {
 
@@ -103,29 +104,27 @@ public class Database {
 	}
 
 
-	public static Object select(String tableName, String columnName, String selection, Class returnType){
-		Object desiredObj = null;
-
+	public static void select(String tableName) {
 		try {
 			stmt = c.createStatement();
-			String sql = "SELECT * FROM " + tableName + " WHERE "
-					+ columnName + " = '" + selection + "';";
-			System.out.println(sql);
-			ResultSet rs = stmt.executeQuery(sql);
-			//MULTIPURPOSE FOR ALL OBJ TYPEs
-			//SELECT * FROM users WHERE id = (SELECT MAX(id) FROM users);
-			if (rs.next()) {
-				desiredObj = rs.getObject(columnName);
+			ResultSet rs = stmt.executeQuery("select * from " + tableName + ";");
+			while (rs.next()) {
+				int id = rs.getInt("id");
+				//TODO Change the column label of 'String username' back to "name" to avoid conflicts
+				String username = rs.getString("username");
+				//String password = rs.getString("age");
+				
+				System.out.println("ID: " + id);
+				System.out.println("USER: " + username);
+				//System.out.println("PASS: " + password);
 			}
+			System.out.println("Done...");
 			rs.close();
 			stmt.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.err.println(e.getClass().getName() + ": " + e.getMessage());
 			System.exit(0);
-		}
-		finally {
-			return desiredObj;
 		}
 	}
 }
