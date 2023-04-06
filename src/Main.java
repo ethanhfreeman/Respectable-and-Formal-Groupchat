@@ -35,6 +35,13 @@ public class Main {
     	username = scnr.nextLine();
     	System.out.print("Password: ");
     	password = scnr.nextLine();
+    	
+    	//if username exists then
+    	//prompt the user to try a different username
+    	//if the username doesn't exist
+    	//let the user create a password and update the table to have both the new user and pass
+    	
+    	
     }
     
     public static void login() {
