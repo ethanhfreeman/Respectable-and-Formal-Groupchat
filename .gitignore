@@ -1,5 +1,21 @@
-
 .DS_Store
 /bin/
 /src/localHostInfo.java
 /src/Test.java
+*.class
+
+# Eclipse
+.classpath
+.project
+.settings/
+
+# IntelliJ
+.idea/
+*.iml
+*.iws
+
+# Compiled Files
+*.class
+build/
+/bin1/
+java/build/**
