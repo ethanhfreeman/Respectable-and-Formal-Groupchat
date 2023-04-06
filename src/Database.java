@@ -27,19 +27,63 @@ public class Database {
         }
 
     }
-
+/*
+ * ****CREATETABLE DOCUMENTATION ****
+ * Currently this method will create the userinfo table
+ * without any issues. If the table exists, no changes
+ * will be made to the userinfo table. If it does not
+ * already exist, it will create a new table called
+ * "userinfo"
+ */
 	public static void createTable(){
-
+		try {
+			stmt = c.createStatement();
+			String sql = "CREATE TABLE IF NOT EXISTS userinfo" +
+			"(ID INT PRIMARY KEY NOT NULL, " +
+				"USERNAME CHAR(25) NOT NULL," +
+					"PASSWORD CHAR(25) NOT NULL);";
+			stmt.executeUpdate(sql);
+			stmt.close();
+			System.out.println("Table has been created");
+		} catch(Exception e) {
+			e.printStackTrace();
+            System.err.println(e.getClass().getName() + ": " + e.getMessage());
+            System.exit(0);
+		}
 
 
 	}
 
-	public static void insert(){
-		
+	public static void insert(String tableName, int id, String username, String password){
+		try{
+			c.setAutoCommit(false);
+			stmt = c.createStatement();
+			String sql = "INSERT INTO " + tableName + "(id, username, password)" +
+					"VALUES(" + id + ", '" + username + "', '" + password +"');" ;
+			stmt.executeUpdate(sql);
+			c.commit();
+			System.out.println("User created :)");
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.err.println(e.getClass().getName() + ": " + e.getMessage());
+			System.exit(0);
+		}
 	}
 
-	public static void delete(){
+	public static void delete(String tableName, int id){
+		try{
+			c.setAutoCommit(false);
+			stmt = c.createStatement();
+			String sql = "DELETE FROM " + tableName + " WHERE id = " + id;
+			stmt.executeUpdate(sql);
+			c.commit();
 
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.err.println(e.getClass().getName() + ": " + e.getMessage());
+			System.exit(0);
+		}
 	}
 
 	public static void update(String tableName, String columnName, int id, String newValue){
@@ -71,8 +115,11 @@ public class Database {
 			ResultSet rs = stmt.executeQuery("select * from " + tableName + ";");
 			while (rs.next()) {
 				int id = rs.getInt("id");
+
+
 				String username = rs.getString("username");
 				String password = rs.getString("password");
+
 				
 				System.out.println("ID: " + id);
 				System.out.println("USER: " + username);
