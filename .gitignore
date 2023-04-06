@@ -3,7 +3,6 @@
 /bin/
 /src/localHostInfo.java
 /src/Test.java
-*.class
 
 # Eclipse
 .classpath
