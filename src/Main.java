@@ -2,7 +2,8 @@ import java.util.Scanner;
 public class Main {
 	public static Scanner scnr = new Scanner(System.in);
     public static void main(String[] args) throws Exception {
-    	
+    	Database.connect("usersdb");
+    	Database.createTable();
         printMainMenu();
     }
     
