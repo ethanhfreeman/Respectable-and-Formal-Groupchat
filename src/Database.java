@@ -62,7 +62,7 @@ public class Database {
 					"VALUES(" + id + ", '" + username + "', '" + password +"');" ;
 			stmt.executeUpdate(sql);
 			c.commit();
-			System.out.println("User created :)");
+			//System.out.println("User created :)");
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -122,6 +122,35 @@ public class Database {
 			//SELECT * FROM users WHERE id = (SELECT MAX(id) FROM users);
 			if (rs.next()) {
 				desiredObj = rs.getObject(columnName);
+			}
+			rs.close();
+			stmt.close();
+			return desiredObj;
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.err.println(e.getClass().getName() + ": " + e.getMessage());
+			System.exit(0);
+		}
+		finally {
+			return desiredObj;
+		}
+	}
+	
+	
+	//this method below will return the password of a given username
+	public static Object selectPassword(String tableName, String columnName, String selection){
+		Object desiredObj = null;
+
+		try {
+			stmt = c.createStatement();
+			String sql = "SELECT password FROM " + tableName + " WHERE "
+					+ columnName + " = '" + selection + "';";
+			//System.out.println(sql);
+			ResultSet rs = stmt.executeQuery(sql);
+			//MULTIPURPOSE FOR ALL OBJ TYPEs
+			//SELECT * FROM users WHERE id = (SELECT MAX(id) FROM users);
+			if (rs.next()) {
+				desiredObj = rs.getObject("password");
 			}
 			rs.close();
 			stmt.close();

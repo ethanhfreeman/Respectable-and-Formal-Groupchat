@@ -8,6 +8,7 @@ public class Main {
     }
     
     public static void printMainMenu() {
+    	System.out.println("-----------------------------------------");
     	System.out.println("Welcome To the Deez Nutz inc ChatRoom.");
     	System.out.println();
     	System.out.println("Please select from the following options:");
@@ -30,7 +31,10 @@ public class Main {
     	String username = "";
     	String password = "";
     	
+    	
     	System.out.println();
+    	System.out.println("------------------------------------------");
+    	System.out.println("              REGISTRATION");
     	System.out.print("Username: ");
     	username = scnr.nextLine();
     	System.out.print("Password: ");
@@ -46,6 +50,16 @@ public class Main {
     		register();
     	} else {
     		Database.insert("userinfo", newId(), username, password);
+    		System.out.println("Please type (L) to LOGIN");
+    		System.out.println();
+    		System.out.print("-");
+    		String input = scnr.next().toUpperCase();
+    		while (!input.equals("L")) {
+    			System.out.println("Unrecognzied character, please try again.");
+    			System.out.println("-");
+    			input = scnr.next().toUpperCase();
+    		}
+    		login();
     	}
     	
     }
@@ -66,6 +80,41 @@ public class Main {
     }
     
     public static void login() {
+    	System.out.println("------------------------------------------");
+    	System.out.println("                  LOGIN");
+    	System.out.println("Username: ");
+    	String username = scnr.next();
+    	System.out.println("Password: ");
+    	String password = scnr.next();
+    	
+    	
+    	
+    	//if the username exists, check if the password matches
+    	//if the username doesn't exist or the password is wrong, prompt for the user to try again.
+    	
+    	if (Database.select("userinfo", "username", username)!= null) {
+    		if (password.equals(Database.selectPassword("userinfo", "username", username).toString().trim())) {
+    			System.out.println("This was the correct password");
+    		} else { //password was wrong, so they need to try again.
+    			System.out.println("Incorrect password, please press (T) to try again, or (M) to return back to the main menu.");
+    			System.out.println();
+    			System.out.print("-");
+    			String input = scnr.next().toUpperCase();
+        		while (!(input.equals("T") || input.equals("M"))) {
+        			System.out.println("Unrecognzied character, either push (T) to try again or (M) to return to the main menu.");
+        			System.out.println("-");
+        			input = scnr.next().toUpperCase();
+        		}
+        		if (input.toUpperCase().equals("T")) {
+        			login();
+        		} else if (input.toUpperCase().equals("M")) {
+        			printMainMenu();
+        		}
+    		}
+    	} else { //username doesn't exit, so they need to try again
+    		System.out.println("USername doesn't exist");
+    	}
+    	
     	
     }
     
