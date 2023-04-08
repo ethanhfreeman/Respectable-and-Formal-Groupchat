@@ -41,7 +41,28 @@ public class Main {
     	//if the username doesn't exist
     	//let the user create a password and update the table to have both the new user and pass
     	
+    	if (Database.select("userinfo", "username", username)!= null) {
+    		System.out.println("Username unavailable, please try again.");
+    		register();
+    	} else {
+    		Database.insert("userinfo", newId(), username, password);
+    	}
     	
+    }
+    
+    
+    /*NEWID DOCUMENTATION
+     * this will generate the next valid id number for 
+     * the use of inserting in the databse
+     */
+    public static int newId() {
+    	int startingId = 1;
+    	
+    	while (Database.select("userinfo", "id", Integer.toString(startingId)) != null) {
+    	Database.select("userinfo", "id", Integer.toString(startingId++));
+    	}
+    	
+    	return startingId;
     }
     
     public static void login() {

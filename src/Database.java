@@ -44,7 +44,7 @@ public class Database {
 					"PASSWORD CHAR(25) NOT NULL);";
 			stmt.executeUpdate(sql);
 			stmt.close();
-			System.out.println("Table has been created");
+			//System.out.println("Table has been created");
 		} catch(Exception e) {
 			e.printStackTrace();
             System.err.println(e.getClass().getName() + ": " + e.getMessage());
@@ -109,29 +109,30 @@ public class Database {
  * which has columns (ID int primary key, username char(20), password char(20))
  * 
  */
-	public static void select(String tableName) {
+	public static Object select(String tableName, String columnName, String selection){
+		Object desiredObj = null;
+
 		try {
 			stmt = c.createStatement();
-			ResultSet rs = stmt.executeQuery("select * from " + tableName + ";");
-			while (rs.next()) {
-				int id = rs.getInt("id");
-
-
-				String username = rs.getString("username");
-				String password = rs.getString("password");
-
-				
-				System.out.println("ID: " + id);
-				System.out.println("USER: " + username);
-				System.out.println("PASS: " + password);
+			String sql = "SELECT * FROM " + tableName + " WHERE "
+					+ columnName + " = '" + selection + "';";
+			//System.out.println(sql);
+			ResultSet rs = stmt.executeQuery(sql);
+			//MULTIPURPOSE FOR ALL OBJ TYPEs
+			//SELECT * FROM users WHERE id = (SELECT MAX(id) FROM users);
+			if (rs.next()) {
+				desiredObj = rs.getObject(columnName);
 			}
-			System.out.println("Done...");
 			rs.close();
 			stmt.close();
+			return desiredObj;
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.err.println(e.getClass().getName() + ": " + e.getMessage());
 			System.exit(0);
+		}
+		finally {
+			return desiredObj;
 		}
 	}
 }
