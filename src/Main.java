@@ -95,6 +95,7 @@ public class Main {
     	if (Database.select("userinfo", "username", username)!= null) {
     		if (password.equals(Database.selectPassword("userinfo", "username", username).toString().trim())) {
     			System.out.println("This was the correct password");
+    			//this branch of the if statement will need to be updated for the chat room implementation.
     		} else { //password was wrong, so they need to try again.
     			System.out.println("Incorrect password, please press (T) to try again, or (M) to return back to the main menu.");
     			System.out.println();
@@ -110,8 +111,10 @@ public class Main {
         		} else if (input.toUpperCase().equals("M")) {
         			printMainMenu();
         		}
+        		
+        		
     		}
-    	} else { //username doesn't exit, so they need to try again
+    	} else { //username doesn't exit, so they need to try again (unifished)
     		System.out.println("USername doesn't exist");
     	}
     	
