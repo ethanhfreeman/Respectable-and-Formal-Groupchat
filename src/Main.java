@@ -114,7 +114,7 @@ public class Main {
         		
         		
     		}
-    	} else { //username doesn't exit, so they need to try again (unifished)
+    	} else { //username doesn't exit, so they need to try again (unifished)\
     		System.out.println("USername doesn't exist");
     	}
     	
