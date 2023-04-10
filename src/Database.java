@@ -19,7 +19,7 @@ public class Database {
              * methods like 'select()' work.
              */
             c = DriverManager.getConnection(url);
-            System.out.println("Connected :)");
+           // System.out.println("Connected :)"); this is annoying asl
         } catch (Exception e) {
             e.printStackTrace();
             System.err.println(e.getClass().getName() + ": " + e.getMessage());
