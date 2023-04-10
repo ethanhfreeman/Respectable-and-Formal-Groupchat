@@ -24,7 +24,11 @@ public class Main {
     		login();
     	} else if (input.equals("Q")) {
     		quit();
-    	}
+    	} else {
+			//temp
+			System.out.println("Not a valid choice, restarting application");
+			printMainMenu();
+		}
     }
     
     public static void register() {
@@ -56,7 +60,7 @@ public class Main {
     		String input = scnr.next().toUpperCase();
     		while (!input.equals("L")) {
     			System.out.println("Unrecognzied character, please try again.");
-    			System.out.println("-");
+    			System.out.print("-");
     			input = scnr.next().toUpperCase();
     		}
     		login();
@@ -82,10 +86,13 @@ public class Main {
     public static void login() {
     	System.out.println("------------------------------------------");
     	System.out.println("                  LOGIN");
-    	System.out.println("Username: ");
-    	String username = scnr.next();
-    	System.out.println("Password: ");
-    	String password = scnr.next();
+    	System.out.print("Username: ");
+    	String username = scnr.nextLine();
+    	System.out.print("Password: ");
+    	String password = scnr.nextLine();
+
+		//TODO Fix leaving username and password empty being successful logins, it should tell the user the
+		//TODO fields can't be blank.
     	
     	
     	
