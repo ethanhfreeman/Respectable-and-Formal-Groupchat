@@ -131,7 +131,6 @@ public class Main {
         			printMainMenu();
         		}
         		
-        		
     		}
     	} else { 
     		System.out.println("ERROR : Username doesn't exist. Press either (T) to");
@@ -167,7 +166,7 @@ public class Main {
     	System.out.println("-----------------------------------------");
     	System.out.println();
     	System.out.print("-");
-    	String input = scnr.nextLine();
+    	String input = scnr.nextLine().toUpperCase();
     	
     	while (!(input.equals("J") || input.equals("C") || input.equals("A") || input.equals("L"))) {
 			System.out.println("ERROR : Unrecognzied character, either push (J) to");
@@ -185,9 +184,10 @@ public class Main {
 		} else if (input.toUpperCase().equals("A")) {
 //			scnr.nextLine();
 			accountmenu();
-		} else if (input.toUpperCase().equals("L"));
+		} else if (input.toUpperCase().equals("L")) {
 //			scnr.nextLine();
 			login();
+		}
     }
 
 	private static void accountmenu() {
