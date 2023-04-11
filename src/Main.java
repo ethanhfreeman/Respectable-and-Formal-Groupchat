@@ -35,7 +35,6 @@ public class Main {
     	String username = "";
     	String password = "";
     	
-    	
     	System.out.println();
     	System.out.println("------------------------------------------");
     	System.out.println("              REGISTRATION");
@@ -43,12 +42,6 @@ public class Main {
     	username = scnr.nextLine();
     	System.out.print("Password: ");
     	password = scnr.nextLine();
-    	
-    	//if username exists then
-    	//prompt the user to try a different username
-    	//if the username doesn't exist
-    	//let the user create a password and update the table to have both the new user and pass
-    	
     	if (username.equals("") || password.equals("")) {
     		while (username.equals("") || password.equals("")) {
     			System.out.println("ERROR : Please fill out both fields.");
@@ -74,12 +67,13 @@ public class Main {
     		System.out.println("Please type (L) to LOGIN");
     		System.out.println();
     		System.out.print("-");
-    		String input = scnr.next().toUpperCase();
+    		String input = scnr.nextLine().toUpperCase();
     		while (!input.equals("L")) {
     			System.out.println("ERROR : Unrecognzied character, please try again.");
     			System.out.print("-");
-    			input = scnr.next().toUpperCase();
+    			input = scnr.nextLine().toUpperCase();
     		}
+    		
     		login();
     	}
     	
@@ -110,16 +104,12 @@ public class Main {
     	String username = scnr.nextLine();
     	System.out.print("Password: ");
     	String password = scnr.nextLine();
-
-		//TODO Fix leaving username and password empty being successful logins, it should tell the user the
-		//TODO fields can't be blank.
-    	
-    	
-    	
     	
     	if (Database.select("userinfo", "username", username)!= null) {
     		if (password.equals(Database.selectPassword("userinfo", "username", username).toString().trim())) {
-    			System.out.println("This was the correct password");
+    			System.out.println("Welcome " + username + "!");
+    			System.out.println();
+    			chatmenu();
     			//this branch of the if statement will need to be updated for the chat room implementation.
     		} else { //password was wrong, so they need to try again.
     			System.out.println("ERROR : Incorrect password, please press (T) to try again,");
@@ -143,7 +133,7 @@ public class Main {
         		
         		
     		}
-    	} else { //username doesn't exit, so they need to try again (unifished)\
+    	} else { 
     		System.out.println("ERROR : Username doesn't exist. Press either (T) to");
     		System.out.print("      try again or (M) to return to the main menu.");
     		System.out.println();
@@ -153,7 +143,7 @@ public class Main {
     			System.out.println("ERROR : Unrecognzied character, either push (T) to");
     			System.out.println("      try again or (M) to return to the main menu.");
     			System.out.print("-");
-    			input = scnr.next().toUpperCase();
+    			input = scnr.nextLine().toUpperCase();
     		}
     		if (input.toUpperCase().equals("T")) {
     			scnr.nextLine();
@@ -170,4 +160,48 @@ public class Main {
     public static void quit() {
     	
     }
+    
+    public static void chatmenu() {
+    	System.out.println("Please select from the following options:");
+    	System.out.println("(J)oin, (C)reate, (A)ccount, (L)ogout");
+    	System.out.println("-----------------------------------------");
+    	System.out.println();
+    	System.out.print("-");
+    	String input = scnr.nextLine();
+    	
+    	while (!(input.equals("J") || input.equals("C") || input.equals("A") || input.equals("L"))) {
+			System.out.println("ERROR : Unrecognzied character, either push (J) to");
+			System.out.println("        join, (C) to create, (A) for account info");
+			System.out.println("        or (L) to logout. ");
+			System.out.print("-");
+			input = scnr.nextLine().toUpperCase();
+		}
+		if (input.toUpperCase().equals("J")) {
+//			scnr.nextLine();
+			joinmenu();
+		} else if (input.toUpperCase().equals("C")) {
+//			scnr.nextLine();
+			createmenu();
+		} else if (input.toUpperCase().equals("A")) {
+//			scnr.nextLine();
+			accountmenu();
+		} else if (input.toUpperCase().equals("L"));
+//			scnr.nextLine();
+			login();
+    }
+
+	private static void accountmenu() {
+		// TODO Auto-generated method stub
+		System.out.println("DONE");
+	}
+
+	private static void createmenu() {
+		// TODO Auto-generated method stub
+		System.out.println("DONE");
+	}
+
+	private static void joinmenu() {
+		// TODO Auto-generated method stub
+		System.out.println("DONE");
+	}
 }
