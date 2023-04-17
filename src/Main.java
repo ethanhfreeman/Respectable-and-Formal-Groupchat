@@ -186,7 +186,7 @@ public class Main {
 			accountmenu();
 		} else if (input.toUpperCase().equals("L")) {
 //			scnr.nextLine();
-			login();
+			printMainMenu();
 		}
     }
 
