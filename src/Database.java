@@ -54,12 +54,12 @@ public class Database {
 
 	}
 
-	public static void insert(String tableName, int id, String username, String password){
+	public static void insert(String tableName, String username, String password){
 		try{
 			c.setAutoCommit(false);
 			stmt = c.createStatement();
-			String sql = "INSERT INTO " + tableName + "(id, username, password)" +
-					"VALUES(" + id + ", '" + username + "', '" + password +"');" ;
+			String sql = "INSERT INTO " + tableName + "(name, password)" +
+					"VALUES('" + username + "', '" + password +"');" ;
 			stmt.executeUpdate(sql);
 			c.commit();
 			//System.out.println("User created :)");

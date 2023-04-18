@@ -53,7 +53,7 @@ public class Main {
     		
     	}
     	
-    	if (Database.select("userinfo", "username", username)!= null) {
+    	if (Database.select("users", "name", username)!= null) {
     		System.out.println("ERROR : Username unavailable, please try again.");
     		register();
     	} else if (username.trim().equals("") || password.trim().equals("")) {
@@ -63,7 +63,7 @@ public class Main {
     		System.out.println("ERROR : Username or password used illegal character \" \", please try again without a space.");
     		register();
     	} else {
-    		Database.insert("userinfo", newId(), username, password);
+    		Database.insert("users", username, password);
     		System.out.println("Please type (L) to LOGIN");
     		System.out.println();
     		System.out.print("-");
@@ -85,15 +85,15 @@ public class Main {
      * this will generate the next valid id number for 
      * the use of inserting in the databse
      */
-    public static int newId() {
-    	int startingId = 1;
-    	
-    	while (Database.select("userinfo", "id", Integer.toString(startingId)) != null) {
-    	Database.select("userinfo", "id", Integer.toString(startingId++));
-    	}
-    	
-    	return startingId;
-    }
+//    public static int newId() {
+//    	int startingId = 1;
+//    	
+//    	while (Database.select("userinfo", "id", Integer.toString(startingId)) != null) {
+//    	Database.select("userinfo", "id", Integer.toString(startingId++));
+//    	}
+//    	
+//    	return startingId;
+//    }
     
     public static void login() {
     	
@@ -105,8 +105,8 @@ public class Main {
     	System.out.print("Password: ");
     	String password = scnr.nextLine();
     	
-    	if (Database.select("userinfo", "username", username)!= null) {
-    		if (password.equals(Database.selectPassword("userinfo", "username", username).toString().trim())) {
+    	if (Database.select("users", "name", username)!= null) {
+    		if (password.equals(Database.selectPassword("users", "name", username).toString().trim())) {
     			System.out.println("Welcome " + username + "!");
     			System.out.println();
     			chatmenu();
@@ -116,7 +116,7 @@ public class Main {
     			System.out.print("        or (M) to return back to the main menu.");
     			System.out.println();
     			System.out.print("-");
-    			String input = scnr.next().toUpperCase();
+    			String input = scnr.nextLine().toUpperCase();
         		while (!(input.equals("T") || input.equals("M"))) {
         			System.out.println("ERROR : Unrecognzied character, either push (T) to");
         			System.out.println("      try again or (M) to return to the main menu.");
@@ -137,7 +137,7 @@ public class Main {
     		System.out.print("      try again or (M) to return to the main menu.");
     		System.out.println();
 			System.out.print("-");
-			String input = scnr.next().toUpperCase();
+			String input = scnr.nextLine().toUpperCase();
     		while (!(input.equals("T") || input.equals("M"))) {
     			System.out.println("ERROR : Unrecognzied character, either push (T) to");
     			System.out.println("      try again or (M) to return to the main menu.");
@@ -145,10 +145,8 @@ public class Main {
     			input = scnr.nextLine().toUpperCase();
     		}
     		if (input.toUpperCase().equals("T")) {
-    			scnr.nextLine();
     			login();
     		} else if (input.toUpperCase().equals("M")) {
-    			scnr.nextLine();
     			printMainMenu();
     		}
     	}
