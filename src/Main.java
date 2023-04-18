@@ -1,6 +1,8 @@
 import java.util.Scanner;
 public class Main {
 	public static Scanner scnr = new Scanner(System.in);
+	static String currentChatroom = "";
+	static String currentUser = "";
     public static void main(String[] args) throws Exception {
     	Database.connect("usersdb");
     	Database.createTable();
@@ -195,7 +197,13 @@ public class Main {
 
 	private static void createmenu() {
 		// TODO Auto-generated method stub
-		System.out.println("DONE");
+		System.out.println("-----------------------------------------");
+		System.out.println("          CHATROOM CREATOR");
+		System.out.println();
+		System.out.println("What would you like to name your new chatroom?");
+		System.out.print("-");
+		currentChatroom = scnr.nextLine();
+		
 	}
 
 	private static void joinmenu() {
