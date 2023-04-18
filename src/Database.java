@@ -35,24 +35,85 @@ public class Database {
  * already exist, it will create a new table called
  * "userinfo"
  */
-	public static void createTable(){
-		try {
+
+	public static void createUsers(){
+		try{
+			c.setAutoCommit(false);
 			stmt = c.createStatement();
-			String sql = "CREATE TABLE IF NOT EXISTS userinfo" +
-			"(ID INT PRIMARY KEY NOT NULL, " +
-				"USERNAME CHAR(25) NOT NULL," +
-					"PASSWORD CHAR(25) NOT NULL);";
+			String sql = "CREATE TABLE IF NOT EXISTS users(name varchar(30) primary key, password varchar(30));" ;
 			stmt.executeUpdate(sql);
-			stmt.close();
-			//System.out.println("Table has been created");
-		} catch(Exception e) {
-			e.printStackTrace();
-            System.err.println(e.getClass().getName() + ": " + e.getMessage());
-            System.exit(0);
+			c.commit();
 		}
-
-
+		catch (Exception e) {
+			e.printStackTrace();
+			System.err.println(e.getClass().getName() + ": " + e.getMessage());
+			System.exit(0);
+		}
 	}
+	public static void createChatroom(){
+		try{
+			c.setAutoCommit(false);
+			stmt = c.createStatement();
+			String sql =  "CREATE TABLE IF NOT EXISTS chatroom(name varchar(30) primary key);";
+			stmt.executeUpdate(sql);
+			c.commit();
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			System.err.println(e.getClass().getName() + ": " + e.getMessage());
+			System.exit(0);
+		}
+	}
+
+	public static void createUsersChatroom(){
+		try{
+			c.setAutoCommit(false);
+			stmt = c.createStatement();
+			String sql = "CREATE TABLE IF NOT EXISTS users_chatroom(username varchar(30), chatname varchar(30), " +
+					"FOREIGN KEY (username) REFERENCES users(name), FOREIGN KEY (chatname) REFERENCES chatroom(name));";
+			stmt.executeUpdate(sql);
+			c.commit();
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			System.err.println(e.getClass().getName() + ": " + e.getMessage());
+			System.exit(0);
+		}
+	}
+
+	public static void createUserMessages(){
+		try{
+			c.setAutoCommit(false);
+			stmt = c.createStatement();
+			String sql = "CREATE TABLE IF NOT EXISTS users_messages (username varchar(30), " +
+					"chatname varchar(30), content varchar(50), FOREIGN KEY (username) " +
+					"REFERENCES users(name), FOREIGN KEY (chatname) references chatroom(name));" ;
+			stmt.executeUpdate(sql);
+			c.commit();
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			System.err.println(e.getClass().getName() + ": " + e.getMessage());
+			System.exit(0);
+		}
+	}
+
+	public static void createUserTable(){
+		try{
+			c.setAutoCommit(false);
+			stmt = c.createStatement();
+			String sql = "create table users (name varchar(30) primary key, password varchar(30));" ;
+			stmt.executeUpdate(sql);
+			c.commit();
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			System.err.println(e.getClass().getName() + ": " + e.getMessage());
+			System.exit(0);
+		}
+	}
+
+
 
 	public static void insert(String tableName, int id, String username, String password){
 		try{
