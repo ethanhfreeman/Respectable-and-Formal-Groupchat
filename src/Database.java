@@ -163,6 +163,24 @@ public class Database {
 			System.exit(0);
 		}
 	}
+	
+	
+	
+	public static void updateWithoutID(String tableName, String columnName, String newValue, String oldValue){
+		try{
+			c.setAutoCommit(false);
+			stmt = c.createStatement();
+			String sql = "UPDATE " + tableName + " set " + columnName + " = '" + newValue + "' where name = '" + oldValue + "';";
+			stmt.executeUpdate(sql);
+			c.commit();
+
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.err.println(e.getClass().getName() + ": " + e.getMessage());
+			System.exit(0);
+		}
+	}
 
 /* **************SELECT METHOD DOCUMENTATION*****************
  * Select method works as long as you have the database created
@@ -225,4 +243,20 @@ public class Database {
 			return desiredObj;
 		}
 	}
+	
+	public static void insertChatroom(String tableName, String chatName) {
+		try {
+			c.setAutoCommit(false);
+			stmt = c.createStatement();
+			String sql = "INSERT INTO " + tableName + "(name)" +
+					"VALUES('" + chatName + "');";
+			stmt.executeUpdate(sql);
+			c.commit();
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.err.println(e.getClass().getName() + ": " + e.getMessage());
+			System.exit(0);
+		}
+		}
+	
 }
