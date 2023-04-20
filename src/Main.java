@@ -3,7 +3,7 @@ public class Main {
 	public static Scanner scnr = new Scanner(System.in);
 	static String currentChatroom = "";
 	static String currentUser = "";
-	public static int currentKnownMessages = 0;
+	static int currentKnownMessages = 0;
 	
     public static void main(String[] args) throws Exception {
     	Database.connect("usersdb");

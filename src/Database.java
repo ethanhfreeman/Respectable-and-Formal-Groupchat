@@ -290,28 +290,32 @@ public class Database {
 		}
 	
 	
-	public static Object selectMessageWithChatname(String chatName, int id){
-		Object desiredObj = null;
+	public static String selectMessageWithChatname(String chatName, int id){
+		String desiredUser = null;
+		String desiredMessage = null;
+		String returnString = "";
 
 		try {
 			stmt = c.createStatement();
-			String sql = "SELECT content FROM users_messages WHERE id "
+			String sql = "SELECT username,content FROM users_messages WHERE id "
 					+ " = '" + id + "' and chatname = '" + chatName + "';";
 			//System.out.println(sql);
 			ResultSet rs = stmt.executeQuery(sql);
-			if (rs.next()) {
-				desiredObj = rs.getObject("content");
+			while (rs.next()) {
+				desiredUser = rs.getString(1);
+				desiredMessage = rs.getString(2);
 			}
 			rs.close();
 			stmt.close();
-			return desiredObj;
+			returnString = desiredUser + "-> " + desiredMessage;
+			return returnString;
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.err.println(e.getClass().getName() + ": " + e.getMessage());
 			System.exit(0);
 		}
 		finally {
-			return desiredObj;
+			return returnString;
 		}
 	}
 	
@@ -325,10 +329,11 @@ public class Database {
 			//this section generates the newest id for insertion
 			int currentId = 1;
 	    	
-	    	while (selectMessageWithChatname(chatName, currentId) != null) {
+	    	while (!selectMessageWithChatname(chatName, currentId).equals("null-> null")) {
 	    	System.out.println(Database.selectMessageWithChatname(chatName, currentId));
 	    	Main.currentKnownMessages++;
-	    	Database.select("users_messages", "id", Integer.toString(currentId++));
+	    	currentId++;
+	    	Database.selectMessageWithChatname(chatName, currentId);
 	    	}
 		} catch (Exception e) {
 			e.printStackTrace();
