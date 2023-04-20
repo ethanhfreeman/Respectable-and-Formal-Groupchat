@@ -86,7 +86,7 @@ public class Database {
 			c.setAutoCommit(false);
 			stmt = c.createStatement();
 			String sql = "CREATE TABLE IF NOT EXISTS users_messages (username varchar(30), " +
-					"chatname varchar(30), content varchar(50), FOREIGN KEY (username) " +
+					"chatname varchar(30), content varchar(50), id int primary key, FOREIGN KEY (username) " +
 					"REFERENCES users(name), FOREIGN KEY (chatname) references chatroom(name));" ;
 			stmt.executeUpdate(sql);
 			c.commit();
@@ -130,6 +130,36 @@ public class Database {
 			System.err.println(e.getClass().getName() + ": " + e.getMessage());
 			System.exit(0);
 		}
+	}
+	
+	
+	/*
+	 * THIS IS USED TO INSERT A MESSAGE INTO users_messages
+	 */
+	public static void insertMessage(String tableName, String username, String content, String chatName) {
+		
+		try{
+			//this section generates the newest id for insertion
+			int startingId = 1;
+	    	
+	    	while (Database.select("users_messages", "id", Integer.toString(startingId)) != null) {
+	    	Database.select("users_messages", "id", Integer.toString(startingId++));
+	    	}
+	    	//end of first commented section
+			c.setAutoCommit(false);
+			stmt = c.createStatement();			
+			String sql = "INSERT INTO " + tableName + "(username, chatname, content, id)" +
+					" VALUES('" + username + "', '" + chatName + "', '" + content + "', " + startingId +");" ;
+			stmt.executeUpdate(sql);
+			c.commit();
+			
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.err.println(e.getClass().getName() + ": " + e.getMessage());
+			System.exit(0);
+		}
+			
 	}
 
 	public static void delete(String tableName, int id){

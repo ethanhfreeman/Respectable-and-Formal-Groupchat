@@ -3,6 +3,8 @@ public class Main {
 	public static Scanner scnr = new Scanner(System.in);
 	static String currentChatroom = "";
 	static String currentUser = "";
+	static int currentKnownMessages = 0;
+	
     public static void main(String[] args) throws Exception {
     	Database.connect("usersdb");
         printMainMenu();
@@ -84,17 +86,34 @@ public class Main {
     
     /*NEWID DOCUMENTATION
      * this will generate the next valid id number for 
-     * the use of inserting in the databse
+     * the use of inserting messages into users_messages
      */
-//    public static int newId() {
-//    	int startingId = 1;
-//    	
-//    	while (Database.select("userinfo", "id", Integer.toString(startingId)) != null) {
-//    	Database.select("userinfo", "id", Integer.toString(startingId++));
-//    	}
-//    	
-//    	return startingId;
-//    }
+    
+ 
+    public static int newId() {
+    	int startingId = 1;
+    	
+    	while (Database.select("users_messages", "id", Integer.toString(startingId)) != null) {
+    	Database.select("users_messages", "id", Integer.toString(startingId++));
+    	}
+    	
+    	return startingId;
+    }
+    
+    
+    public static int totalMessages(String chatName) {
+    	int startingId = 0;
+    	
+    	
+    	//while users_messages has a new id 
+    	while (Database.select("users_messages", "id", Integer.toString(startingId)) != null) {
+    	Database.select("users_messages", "id", Integer.toString(startingId++));
+    	}
+    	
+    	return startingId;
+    }
+    
+    
     
     public static void login() {
     	
@@ -277,6 +296,7 @@ public class Main {
 		System.out.println("-----------------------------------------");
 		
 		while (true) {
+			
 			String input = scnr.nextLine();
 			//TODO process inputs
 		}
