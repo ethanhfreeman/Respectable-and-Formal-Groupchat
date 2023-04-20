@@ -327,6 +327,7 @@ public class Database {
 	    	
 	    	while (selectMessageWithChatname(chatName, currentId) != null) {
 	    	System.out.println(Database.selectMessageWithChatname(chatName, currentId));
+	    	Main.currentKnownMessages++;
 	    	Database.select("users_messages", "id", Integer.toString(currentId++));
 	    	}
 		} catch (Exception e) {
