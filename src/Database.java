@@ -320,20 +320,21 @@ public class Database {
 	}
 	
 	
-	
-
-	
 	public static void getMessages(String chatName) {
 		
 		try{
 			//this section generates the newest id for insertion
-			int currentId = 1;
+			int currentId =  (int)getFirstMessageId(chatName);
 	    	
 	    	while (!selectMessageWithChatname(chatName, currentId).equals("null-> null")) {
 	    	System.out.println(Database.selectMessageWithChatname(chatName, currentId));
 	    	Main.currentKnownMessages++;
-	    	currentId++;
-	    	Database.selectMessageWithChatname(chatName, currentId);
+	    	
+	    	if (getNextMessageId(chatName, currentId) == null) {
+	    		currentId++;
+	    	} else {
+	    		currentId = (int)getNextMessageId(chatName, currentId);
+	    	}
 	    	}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -341,6 +342,61 @@ public class Database {
 			System.exit(0);
 		}
 			
+	}
+	
+	public static Object getFirstMessageId(String chatName) {
+		Object desiredObj = null;
+
+		try {
+			stmt = c.createStatement();
+			String sql = "select id from users_messages where chatname = '" + chatName + "'" +
+					"order by id ASC limit 1";
+			//System.out.println(sql);
+			ResultSet rs = stmt.executeQuery(sql);
+			//MULTIPURPOSE FOR ALL OBJ TYPEs
+			//SELECT * FROM users WHERE id = (SELECT MAX(id) FROM users);
+			if (rs.next()) {
+				desiredObj = rs.getObject("id");
+			}
+			rs.close();
+			stmt.close();
+			return desiredObj;
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.err.println(e.getClass().getName() + ": " + e.getMessage());
+			System.exit(0);
+		}
+		finally {
+			return desiredObj;
+		}
+	}
+	
+	
+	public static Object getNextMessageId(String chatName, int currentId) {
+		Object desiredObj = null;
+
+		try {
+			stmt = c.createStatement();
+			String sql = "select id from users_messages where chatname = '" + chatName + "'" +
+					" and id > " + currentId + " order by id ASC limit 1";
+			//System.out.println(sql);
+			ResultSet rs = stmt.executeQuery(sql);
+			//MULTIPURPOSE FOR ALL OBJ TYPEs
+			//SELECT * FROM users WHERE id = (SELECT MAX(id) FROM users);
+			if (rs.next()) {
+				desiredObj = rs.getObject("id");
+			}
+			rs.close();
+			stmt.close();
+			return desiredObj;
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.err.println(e.getClass().getName() + ": " + e.getMessage());
+			System.exit(0);
+		}
+		finally {
+			return desiredObj;
+		}
 	}
 	
 }
