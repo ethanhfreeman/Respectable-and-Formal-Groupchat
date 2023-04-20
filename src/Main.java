@@ -295,16 +295,18 @@ public class Main {
 		System.out.println("Success! Welcome to " + currentChatroom + "!");
 		System.out.println("-----------------------------------------");
 		
-		while (true) {
-			
-			String input = scnr.nextLine();
-			//TODO process inputs
-		}
-		
 	}
 
-	private static void joinmenu() {
+	public static void joinmenu() {
 		// TODO Auto-generated method stub
 		System.out.println("DONE");
 	}
+	
+	
+	
+//	public static void printHistory() {
+//		for (int i = 0; i < 
+//		
+//	}
+	
 }

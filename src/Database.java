@@ -289,4 +289,52 @@ public class Database {
 		}
 		}
 	
+	
+	public static Object selectMessageWithChatname(String chatName, int id){
+		Object desiredObj = null;
+
+		try {
+			stmt = c.createStatement();
+			String sql = "SELECT content FROM users_messages WHERE id "
+					+ " = '" + id + "' and chatname = '" + chatName + "';";
+			//System.out.println(sql);
+			ResultSet rs = stmt.executeQuery(sql);
+			if (rs.next()) {
+				desiredObj = rs.getObject("content");
+			}
+			rs.close();
+			stmt.close();
+			return desiredObj;
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.err.println(e.getClass().getName() + ": " + e.getMessage());
+			System.exit(0);
+		}
+		finally {
+			return desiredObj;
+		}
+	}
+	
+	
+	
+
+	
+	public static void getMessages(String chatName) {
+		
+		try{
+			//this section generates the newest id for insertion
+			int currentId = 1;
+	    	
+	    	while (selectMessageWithChatname(chatName, currentId) != null) {
+	    	System.out.println(Database.selectMessageWithChatname(chatName, currentId));
+	    	Database.select("users_messages", "id", Integer.toString(currentId++));
+	    	}
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.err.println(e.getClass().getName() + ": " + e.getMessage());
+			System.exit(0);
+		}
+			
+	}
+	
 }
