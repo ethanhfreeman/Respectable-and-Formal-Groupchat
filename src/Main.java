@@ -296,6 +296,8 @@ public class Main {
 		System.out.println("Success! Welcome to " + currentChatroom + "!");
 		System.out.println("-----------------------------------------");
 		
+
+		
 	}
 
 	public static void joinmenu() {
@@ -326,10 +328,32 @@ public class Main {
 	}
 	
 	
-	
-//	public static void printHistory() {
-//		for (int i = 0; i < 
-//		
-//	}
+		public static void chatRoomMessageLoop() {
+			while (true) {
+				String input = scnr.nextLine();
+				
+				if (input.charAt(0) == '/') {
+					if (input == "/help") {
+						System.out.println("Valid chat commands include:");
+						System.out.println("     /help");
+						System.out.println("     /list");
+						System.out.println("     /history");
+						System.out.println("     /leave");
+					} else if (input == "/list") {
+						Database.printActiveUsers(currentChatroom);
+					} else if (input == "/history") {
+						Database.getMessages(currentChatroom);
+					} else if (input == "/leave") {
+						
+					} else {
+						System.out.println("ERROR: Unknown command. Use /help for a list of commands.");
+					}
+					
+				} else {
+					//TODO insert message into messages table
+				}
+				
+			}
+		}
 	
 }

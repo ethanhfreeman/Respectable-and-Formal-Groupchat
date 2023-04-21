@@ -356,6 +356,32 @@ public static void removeUserFromChatroom(String tableName, String username, Str
 	}
 	
 	
+	
+	public static void printActiveUsers(String chatName) {
+		String desiredUser = null;
+		
+		try {
+			stmt = c.createStatement();
+			String sql = "SELECT username FROM users_chatroom WHERE chatname "
+					+ " = '" + chatName + "';";
+			//System.out.println(sql);
+			ResultSet rs = stmt.executeQuery(sql);
+			while (rs.next()) {
+				desiredUser = rs.getString(1);
+				System.out.println(desiredUser);
+			}
+			rs.close();
+			stmt.close();
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.err.println(e.getClass().getName() + ": " + e.getMessage());
+			System.exit(0);
+		}
+		finally {
+		}
+	}
+	
 	public static void getMessages(String chatName) {
 		
 		try{
