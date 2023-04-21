@@ -161,6 +161,42 @@ public class Database {
 		}
 			
 	}
+	
+	
+public static void insertUserToChatroom(String tableName, String username, String chatName) {
+		
+		try{
+			c.setAutoCommit(false);
+			stmt = c.createStatement();			
+			String sql = "INSERT INTO " + tableName + "(username, chatname)" +
+					" VALUES('" + username + "', '" + chatName +"');" ;
+			stmt.executeUpdate(sql);
+			c.commit();
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.err.println(e.getClass().getName() + ": " + e.getMessage());
+			System.exit(0);
+		}
+			
+	}
+
+public static void removeUserFromChatroom(String tableName, String username, String chatName) {
+	
+	try{
+		c.setAutoCommit(false);
+		stmt = c.createStatement();			
+		String sql = "delete  from " + tableName + "where username = " + "'" + username + "');" ;
+		stmt.executeUpdate(sql);
+		c.commit();
+	} catch (Exception e) {
+		e.printStackTrace();
+		System.err.println(e.getClass().getName() + ": " + e.getMessage());
+		System.exit(0);
+	}
+		
+}
+	
+	
 
 	public static void delete(String tableName, int id){
 		try{

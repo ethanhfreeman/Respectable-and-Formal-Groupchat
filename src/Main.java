@@ -292,14 +292,37 @@ public class Main {
 			currentChatroom = scnr.nextLine();
 		}
 		Database.insertChatroom("chatroom", currentChatroom);
+		Database.insertUserToChatroom("users_chatroom", currentUser, currentChatroom);
 		System.out.println("Success! Welcome to " + currentChatroom + "!");
 		System.out.println("-----------------------------------------");
 		
 	}
 
 	public static void joinmenu() {
-		// TODO Auto-generated method stub
-		System.out.println("DONE");
+		System.out.println("-----------------------------------------");
+		System.out.println("          CHATROOM JOINER");
+		System.out.println();
+		System.out.println("What chatroom would you like to join?");
+		System.out.print("[CHATNAME]: ");
+		currentChatroom = scnr.nextLine();
+		
+		while (!currentChatroom.matches("[a-zA-Z0-9]+")) {
+			System.out.println("ERROR: Please, no weird symbols. Try another name.");
+			System.out.println();
+			System.out.print("[CHATNAME]: ");
+			currentChatroom = scnr.nextLine();
+		}
+		
+		while (Database.select("chatroom", "name", currentChatroom) == null) {
+			System.out.println("ERROR: Chatname doesn't exist. Please try another name.");
+			System.out.println();
+			System.out.print("[CHATNAME]: ");
+			currentChatroom = scnr.nextLine();
+		}
+		Database.insertUserToChatroom("users_chatroom", currentUser, currentChatroom);
+		System.out.println("Success! Welcome to " + currentChatroom + "!");
+		System.out.println("-----------------------------------------");
+		Database.getMessages(currentChatroom);
 	}
 	
 	
