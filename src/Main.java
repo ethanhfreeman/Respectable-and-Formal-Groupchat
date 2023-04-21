@@ -346,6 +346,7 @@ public class Main {
 					} else if (input == "/leave") {
 						//TODO delete user from users_chatroom
 						currentChatroom = "";
+						chatmenu();
 					} else {
 						System.out.println("ERROR: Unknown command. Use /help for a list of commands.");
 					}
