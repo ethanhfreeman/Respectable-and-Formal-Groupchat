@@ -344,7 +344,8 @@ public class Main {
 					} else if (input == "/history") {
 						Database.getMessages(currentChatroom);
 					} else if (input == "/leave") {
-						
+						//TODO delete user from users_chatroom
+						currentChatroom = "";
 					} else {
 						System.out.println("ERROR: Unknown command. Use /help for a list of commands.");
 					}
