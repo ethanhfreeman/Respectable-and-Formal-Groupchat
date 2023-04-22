@@ -1,7 +1,7 @@
 
 import java.sql.*;
 import java.util.Locale;
-
+import java.util.ArrayList;
 public class Database {
 
     private static java.sql.Connection c = null;
@@ -406,6 +406,10 @@ public static void removeUserFromChatroom(String tableName, String username, Str
 			
 	}
 	
+	
+	
+	
+	
 	public static Object getFirstMessageId(String chatName) {
 		Object desiredObj = null;
 
@@ -459,6 +463,57 @@ public static void removeUserFromChatroom(String tableName, String username, Str
 		finally {
 			return desiredObj;
 		}
+	}
+	
+	public static void printNewMessages(String chatName) {
+		//example current known messages is 5 but there are 6 total messages in baller2
+		int totalMessages = 0;
+
+		try {
+			stmt = c.createStatement();
+			String sql = "SELECT count(content) from users_messages where chatname = '" + chatName + "';";
+			//System.out.println(sql);
+			ResultSet rs = stmt.executeQuery(sql);
+			//MULTIPURPOSE FOR ALL OBJ TYPEs
+			//SELECT * FROM users WHERE id = (SELECT MAX(id) FROM users);
+			if (rs.next()) {
+				totalMessages = (int) rs.getObject("count");
+			}
+			rs.close();
+			stmt.close();
+			
+			
+			ArrayList<Integer> messages = new ArrayList<Integer>();	
+			for (int i = Main.currentKnownMessages; i < totalMessages; i++ ) {
+				stmt = c.createStatement();
+				String sql2 = "select id from users_messages where chatname = '" + chatName + "';";
+				ResultSet rs2 = stmt.executeQuery(sql2);	
+				while (rs2.next()) {
+					messages.add((Integer)rs.getObject("id"));
+					//this adds all of the ids of the messages from the column to a list
+				}
+				rs.close();
+				stmt.close();
+			}
+			
+//			int idOfListForCurrentMessage = 0;
+//			for (int i = 0; i <= Main.currentKnownMessages; i++) {
+//				idOfListForCurrentMessage++; // now we should  have the index of the next chat message that has not been seen by the user 
+//			}
+//			
+			
+			//REVIEW THIS PART UNDER HERE FOR LOGIC ERRORS ------ HASNT BEEN TESTED
+			for (int j = Main.currentKnownMessages; j <= messages.size() - 1; j++  ) {
+				System.out.println(Database.selectMessageWithChatname(chatName, messages.get(j)));
+			}
+			
+		
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.err.println(e.getClass().getName() + ": " + e.getMessage());
+			System.exit(0);
+		}
+		
 	}
 	
 }

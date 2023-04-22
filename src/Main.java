@@ -330,6 +330,7 @@ public class Main {
 	
 		public static void chatRoomMessageLoop() {
 			while (true) {
+				//TODO getNewMessages()
 				String input = scnr.nextLine();
 				
 				if (input.charAt(0) == '/') {
@@ -353,6 +354,7 @@ public class Main {
 					
 				} else {
 					//TODO insert message into messages table
+						Database.insertMessage("users_messages", currentUser, input, currentChatroom);
 				}
 				
 			}
