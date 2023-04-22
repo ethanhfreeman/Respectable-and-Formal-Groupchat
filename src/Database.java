@@ -503,10 +503,12 @@ public static void removeUserFromChatroom(String tableName, String username, Str
 //			
 			
 			//REVIEW THIS PART UNDER HERE FOR LOGIC ERRORS ------ HASNT BEEN TESTED
+			int newMessages = 0;
 			for (int j = Main.currentKnownMessages; j <= messages.size() - 1; j++  ) {
 				System.out.println(Database.selectMessageWithChatname(chatName, messages.get(j)));
+				newMessages++;
 			}
-			
+			Main.currentKnownMessages += newMessages;
 		
 		} catch (Exception e) {
 			e.printStackTrace();
