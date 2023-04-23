@@ -295,7 +295,7 @@ public class Main {
 		Database.insertUserToChatroom("users_chatroom", currentUser, currentChatroom);
 		System.out.println("Success! Welcome to " + currentChatroom + "!");
 		System.out.println("-----------------------------------------");
-		
+		chatRoomMessageLoop();
 
 		
 	}
@@ -325,27 +325,30 @@ public class Main {
 		System.out.println("Success! Welcome to " + currentChatroom + "!");
 		System.out.println("-----------------------------------------");
 		Database.getMessages(currentChatroom);
+		chatRoomMessageLoop();
 	}
 	
 	
 		public static void chatRoomMessageLoop() {
+			//this does not account for an empty string where the message is "",
 			while (true) {
 				//TODO getNewMessages()
 				String input = scnr.nextLine();
-				
 				if (input.charAt(0) == '/') {
-					if (input == "/help") {
+					
+					if (input.equals("/help")) {
 						System.out.println("Valid chat commands include:");
 						System.out.println("     /help");
 						System.out.println("     /list");
 						System.out.println("     /history");
 						System.out.println("     /leave");
-					} else if (input == "/list") {
+					} else if (input.equals("/list")) {
 						Database.printActiveUsers(currentChatroom);
-					} else if (input == "/history") {
+					} else if (input.equals("/history")) {
 						Database.getMessages(currentChatroom);
-					} else if (input == "/leave") {
+					} else if (input.equals("/leave")) {
 						//TODO delete user from users_chatroom
+						Database.deleteUser("users_chatroom", currentUser);
 						currentChatroom = "";
 						chatmenu();
 					} else {
@@ -353,8 +356,10 @@ public class Main {
 					}
 					
 				} else {
-					//TODO insert message into messages table
+					
 						Database.insertMessage("users_messages", currentUser, input, currentChatroom);
+						Database.printNewMessages(currentChatroom);
+					
 				}
 				
 			}

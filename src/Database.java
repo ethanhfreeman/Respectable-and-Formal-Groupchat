@@ -152,6 +152,7 @@ public class Database {
 					" VALUES('" + username + "', '" + chatName + "', '" + content + "', " + startingId +");" ;
 			stmt.executeUpdate(sql);
 			c.commit();
+			Main.currentKnownMessages++; //we don't want the print new messages to print their messages that they sent
 			
 
 		} catch (Exception e) {
@@ -203,6 +204,21 @@ public static void removeUserFromChatroom(String tableName, String username, Str
 			c.setAutoCommit(false);
 			stmt = c.createStatement();
 			String sql = "DELETE FROM " + tableName + " WHERE id = " + id;
+			stmt.executeUpdate(sql);
+			c.commit();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.err.println(e.getClass().getName() + ": " + e.getMessage());
+			System.exit(0);
+		}
+	}
+	
+	public static void deleteUser(String tableName, String username){
+		try{
+			c.setAutoCommit(false);
+			stmt = c.createStatement();
+			String sql = "DELETE FROM " + tableName + " WHERE username = '" + username + "';";
 			stmt.executeUpdate(sql);
 			c.commit();
 
@@ -467,6 +483,7 @@ public static void removeUserFromChatroom(String tableName, String username, Str
 	
 	public static void printNewMessages(String chatName) {
 		//example current known messages is 5 but there are 6 total messages in baller2
+		String totalMessagesStr = "";
 		int totalMessages = 0;
 
 		try {
@@ -477,7 +494,9 @@ public static void removeUserFromChatroom(String tableName, String username, Str
 			//MULTIPURPOSE FOR ALL OBJ TYPEs
 			//SELECT * FROM users WHERE id = (SELECT MAX(id) FROM users);
 			if (rs.next()) {
-				totalMessages = (int) rs.getObject("count");
+				totalMessagesStr = "" + rs.getObject("count");
+				totalMessagesStr.replaceAll("\\s", "");
+				totalMessages = Integer.parseInt(totalMessagesStr);
 			}
 			rs.close();
 			stmt.close();
