@@ -498,22 +498,22 @@ public static void removeUserFromChatroom(String tableName, String username, Str
 				totalMessagesStr.replaceAll("\\s", "");
 				totalMessages = Integer.parseInt(totalMessagesStr);
 			}
-			rs.close();
-			stmt.close();
+//			rs.close();
+//			stmt.close();
 			
 			
 			ArrayList<Integer> messages = new ArrayList<Integer>();	
-			for (int i = Main.currentKnownMessages; i < totalMessages; i++ ) {
+			
+				stmt = null;
 				stmt = c.createStatement();
 				String sql2 = "select id from users_messages where chatname = '" + chatName + "';";
-				ResultSet rs2 = stmt.executeQuery(sql2);	
-				while (rs2.next()) {
-					messages.add((Integer)rs.getObject("id"));
+				rs = stmt.executeQuery(sql2);	
+				while (rs.next()) {
+					messages.add( (Integer)rs.getObject("id")  );
 					//this adds all of the ids of the messages from the column to a list
 				}
 				rs.close();
 				stmt.close();
-			}
 			
 //			int idOfListForCurrentMessage = 0;
 //			for (int i = 0; i <= Main.currentKnownMessages; i++) {
