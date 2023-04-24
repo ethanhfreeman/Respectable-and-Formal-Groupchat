@@ -402,6 +402,10 @@ public static void removeUserFromChatroom(String tableName, String username, Str
 		
 		try{
 			//this section generates the newest id for insertion
+			
+			if (getFirstMessageId(chatName) == null) {
+				return;
+			}
 			int currentId =  (int)getFirstMessageId(chatName);
 	    	
 	    	while (!selectMessageWithChatname(chatName, currentId).equals("null-> null")) {
