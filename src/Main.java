@@ -3,6 +3,8 @@ public class Main {
 	public static Scanner scnr = new Scanner(System.in);
 	static String currentChatroom = "";
 	static String currentUser = "";
+	static int currentKnownMessages = 0;
+	
     public static void main(String[] args) throws Exception {
     	Database.connect("usersdb");
         printMainMenu();
@@ -84,17 +86,34 @@ public class Main {
     
     /*NEWID DOCUMENTATION
      * this will generate the next valid id number for 
-     * the use of inserting in the databse
+     * the use of inserting messages into users_messages
      */
-//    public static int newId() {
-//    	int startingId = 1;
-//    	
-//    	while (Database.select("userinfo", "id", Integer.toString(startingId)) != null) {
-//    	Database.select("userinfo", "id", Integer.toString(startingId++));
-//    	}
-//    	
-//    	return startingId;
-//    }
+    
+ 
+    public static int newId() {
+    	int startingId = 1;
+    	
+    	while (Database.select("users_messages", "id", Integer.toString(startingId)) != null) {
+    	Database.select("users_messages", "id", Integer.toString(startingId++));
+    	}
+    	
+    	return startingId;
+    }
+    
+    
+    public static int totalMessages(String chatName) {
+    	int startingId = 0;
+    	
+    	
+    	//while users_messages has a new id 
+    	while (Database.select("users_messages", "id", Integer.toString(startingId)) != null) {
+    	Database.select("users_messages", "id", Integer.toString(startingId++));
+    	}
+    	
+    	return startingId;
+    }
+    
+    
     
     public static void login() {
     	
@@ -273,18 +292,80 @@ public class Main {
 			currentChatroom = scnr.nextLine();
 		}
 		Database.insertChatroom("chatroom", currentChatroom);
+		Database.insertUserToChatroom("users_chatroom", currentUser, currentChatroom);
 		System.out.println("Success! Welcome to " + currentChatroom + "!");
 		System.out.println("-----------------------------------------");
-		
-		while (true) {
-			String input = scnr.nextLine();
-			//TODO process inputs
-		}
+		chatRoomMessageLoop();
+
 		
 	}
 
-	private static void joinmenu() {
-		// TODO Auto-generated method stub
-		System.out.println("DONE");
+	public static void joinmenu() {
+		System.out.println("-----------------------------------------");
+		System.out.println("          CHATROOM JOINER");
+		System.out.println();
+		System.out.println("What chatroom would you like to join?");
+		System.out.print("[CHATNAME]: ");
+		currentChatroom = scnr.nextLine();
+		
+		while (!currentChatroom.matches("[a-zA-Z0-9]+")) {
+			System.out.println("ERROR: Please, no weird symbols. Try another name.");
+			System.out.println();
+			System.out.print("[CHATNAME]: ");
+			currentChatroom = scnr.nextLine();
+		}
+		
+		while (Database.select("chatroom", "name", currentChatroom) == null) {
+			System.out.println("ERROR: Chatname doesn't exist. Please try another name.");
+			System.out.println();
+			System.out.print("[CHATNAME]: ");
+			currentChatroom = scnr.nextLine();
+		}
+		Database.insertUserToChatroom("users_chatroom", currentUser, currentChatroom);
+		System.out.println("Success! Welcome to " + currentChatroom + "!");
+		System.out.println("-----------------------------------------");
+		Database.getMessages(currentChatroom);
+		chatRoomMessageLoop();
 	}
+	
+	
+		public static void chatRoomMessageLoop() {
+			//this does not account for an empty string where the message is "",
+			while (true) {
+				//TODO getNewMessages()
+				String input = scnr.nextLine();
+				
+				if (input.equals("") || input.replaceAll("\\s", "").equals("")) {
+					System.out.println("Please send an actual message and not blank space.");
+					
+				} else if (input.charAt(0) == '/') {
+					
+					if (input.equals("/help")) {
+						System.out.println("Valid chat commands include:");
+						System.out.println("     /help");
+						System.out.println("     /list");
+						System.out.println("     /history");
+						System.out.println("     /leave");
+					} else if (input.equals("/list")) {
+						Database.printActiveUsers(currentChatroom);
+					} else if (input.equals("/history")) {
+						Database.getMessages(currentChatroom);
+					} else if (input.equals("/leave")) {
+						//TODO delete user from users_chatroom
+						Database.deleteUser("users_chatroom", currentUser);
+						currentChatroom = "";
+						chatmenu();
+					} else {
+						System.out.println("ERROR: Unknown command. Use /help for a list of commands.");
+					}
+					
+				} else {
+					    Database.printNewMessages(currentChatroom);
+						Database.insertMessage("users_messages", currentUser, input, currentChatroom);
+					
+				}
+				
+			}
+		}
+	
 }
