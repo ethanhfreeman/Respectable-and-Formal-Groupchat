@@ -334,7 +334,11 @@ public class Main {
 			while (true) {
 				//TODO getNewMessages()
 				String input = scnr.nextLine();
-				if (input.charAt(0) == '/') {
+				
+				if (input.equals("") || input.replaceAll("\\s", "").equals("")) {
+					System.out.println("Please send an actual message and not blank space.");
+					
+				} else if (input.charAt(0) == '/') {
 					
 					if (input.equals("/help")) {
 						System.out.println("Valid chat commands include:");
@@ -356,9 +360,8 @@ public class Main {
 					}
 					
 				} else {
-					
+					    Database.printNewMessages(currentChatroom);
 						Database.insertMessage("users_messages", currentUser, input, currentChatroom);
-						Database.printNewMessages(currentChatroom);
 					
 				}
 				
