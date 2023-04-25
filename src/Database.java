@@ -50,11 +50,39 @@ public class Database {
 			System.exit(0);
 		}
 	}
+	public static void deleteUsers(){
+		try{
+			c.setAutoCommit(false);
+			stmt = c.createStatement();
+			String sql = "DROP TABLE IF EXISTS users;" ;
+			stmt.executeUpdate(sql);
+			c.commit();
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			System.err.println(e.getClass().getName() + ": " + e.getMessage());
+			System.exit(0);
+		}
+	}
 	public static void createChatroom(){
 		try{
 			c.setAutoCommit(false);
 			stmt = c.createStatement();
 			String sql =  "CREATE TABLE IF NOT EXISTS chatroom(name varchar(30) primary key);";
+			stmt.executeUpdate(sql);
+			c.commit();
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			System.err.println(e.getClass().getName() + ": " + e.getMessage());
+			System.exit(0);
+		}
+	}
+	public static void deleteChatroom(){
+		try{
+			c.setAutoCommit(false);
+			stmt = c.createStatement();
+			String sql = "DROP TABLE IF EXISTS chatroom;" ;
 			stmt.executeUpdate(sql);
 			c.commit();
 		}
@@ -71,6 +99,20 @@ public class Database {
 			stmt = c.createStatement();
 			String sql = "CREATE TABLE IF NOT EXISTS users_chatroom(username varchar(30), chatname varchar(30), " +
 					"FOREIGN KEY (username) REFERENCES users(name), FOREIGN KEY (chatname) REFERENCES chatroom(name));";
+			stmt.executeUpdate(sql);
+			c.commit();
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			System.err.println(e.getClass().getName() + ": " + e.getMessage());
+			System.exit(0);
+		}
+	}
+	public static void deleteUsersChatroom(){
+		try{
+			c.setAutoCommit(false);
+			stmt = c.createStatement();
+			String sql = "DROP TABLE IF EXISTS users_chatroom;" ;
 			stmt.executeUpdate(sql);
 			c.commit();
 		}
@@ -97,12 +139,11 @@ public class Database {
 			System.exit(0);
 		}
 	}
-
-	public static void createUserTable(){
+	public static void deleteUserMessages(){
 		try{
 			c.setAutoCommit(false);
 			stmt = c.createStatement();
-			String sql = "create table users (name varchar(30) primary key, password varchar(30));" ;
+			String sql = "DROP TABLE users_messages;" ;
 			stmt.executeUpdate(sql);
 			c.commit();
 		}
@@ -229,23 +270,6 @@ public static void removeUserFromChatroom(String tableName, String username, Str
 		}
 	}
 
-	public static void update(String tableName, String columnName, int id, String newValue){
-		try{
-			c.setAutoCommit(false);
-			stmt = c.createStatement();
-			String sql = "UPDATE " + tableName + " set " + columnName + " = '" + newValue + "' where ID = " + id + ";";
-			System.out.println(sql);
-			stmt.executeUpdate(sql);
-			c.commit();
-
-
-		} catch (Exception e) {
-			e.printStackTrace();
-			System.err.println(e.getClass().getName() + ": " + e.getMessage());
-			System.exit(0);
-		}
-	}
-	
 	
 	
 	public static void updateWithoutID(String tableName, String columnName, String newValue, String oldValue){
@@ -339,7 +363,27 @@ public static void removeUserFromChatroom(String tableName, String username, Str
 			System.err.println(e.getClass().getName() + ": " + e.getMessage());
 			System.exit(0);
 		}
+	}
+	public static ArrayList<String> getAllChatroomNames() {
+		ArrayList<String> chatroomNames = new ArrayList<>();
+		try {
+
+			String sql = "SELECT name FROM chatroom;";
+			stmt = c.createStatement();
+			ResultSet resultSet = stmt.executeQuery(sql);
+
+			while (resultSet.next()) {
+				String chatroomName = resultSet.getString("name");
+				chatroomNames.add(chatroomName);
+			}
 		}
+		catch(Exception e){
+			e.printStackTrace();
+			System.err.println(e.getClass().getName() + ": " + e.getMessage());
+			System.exit(0);
+		}
+		return chatroomNames;
+	}
 	
 	
 	public static String selectMessageWithChatname(String chatName, int id){
@@ -398,19 +442,20 @@ public static void removeUserFromChatroom(String tableName, String username, Str
 		}
 	}
 	
-	public static void getMessages(String chatName) {
+	public static ArrayList<String> getMessages(String chatName) {
 		
+		ArrayList<String> msgHistory = new ArrayList<>();
 		try{
 			//this section generates the newest id for insertion
 			
 			if (getFirstMessageId(chatName) == null) {
-				return;
+				return msgHistory;
 			}
 			int currentId =  (int)getFirstMessageId(chatName);
 	    	
 	    	while (!selectMessageWithChatname(chatName, currentId).equals("null-> null")) {
-	    	System.out.println(Database.selectMessageWithChatname(chatName, currentId));
-	    	Main.currentKnownMessages++;
+	    	msgHistory.add(Database.selectMessageWithChatname(chatName, currentId));
+	    	chatWindow.currentKnownMessages++;
 	    	
 	    	if (getNextMessageId(chatName, currentId) == null) {
 	    		currentId++;
@@ -423,6 +468,7 @@ public static void removeUserFromChatroom(String tableName, String username, Str
 			System.err.println(e.getClass().getName() + ": " + e.getMessage());
 			System.exit(0);
 		}
+		return msgHistory;
 			
 	}
 	
@@ -485,10 +531,11 @@ public static void removeUserFromChatroom(String tableName, String username, Str
 		}
 	}
 	
-	public static void printNewMessages(String chatName) {
+	public static ArrayList<String> printNewMessages(String chatName) {
 		//example current known messages is 5 but there are 6 total messages in baller2
 		String totalMessagesStr = "";
 		int totalMessages = 0;
+		ArrayList<String> messagesR = new ArrayList<String>();
 
 		try {
 			stmt = c.createStatement();
@@ -527,17 +574,19 @@ public static void removeUserFromChatroom(String tableName, String username, Str
 			
 			//REVIEW THIS PART UNDER HERE FOR LOGIC ERRORS ------ HASNT BEEN TESTED
 			int newMessages = 0;
-			for (int j = Main.currentKnownMessages; j <= messages.size() - 1; j++  ) {
-				System.out.println(Database.selectMessageWithChatname(chatName, messages.get(j)));
+			for (int j = chatWindow.currentKnownMessages; j <= messages.size() - 1; j++  ) {
+				messagesR.add(Database.selectMessageWithChatname(chatName, messages.get(j)));
 				newMessages++;
 			}
-			Main.currentKnownMessages += newMessages;
+
+			chatWindow.currentKnownMessages += newMessages;
 		
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.err.println(e.getClass().getName() + ": " + e.getMessage());
 			System.exit(0);
 		}
+		return messagesR;
 		
 	}
 	

@@ -1,10 +1,10 @@
 import javax.swing.*;
 public class choiceMenu {
-    public void newMenu(){
+    public choiceMenu(){
         Object[] options = {"Register", "Login", "Quit"};
         int choice = JOptionPane.showOptionDialog(null,
-                "Please select from the following options:",
-                "Deez Nutz inc ChatRoom.",
+                "Please select the following:",
+                "Deez Nutz Inc ChatRoom",
                 JOptionPane.DEFAULT_OPTION,
                 JOptionPane.INFORMATION_MESSAGE,
                 null,
