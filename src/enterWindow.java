@@ -16,6 +16,8 @@ public class enterWindow extends JFrame{
             super("Deez Nutz Inc - Password Change");
             setSize(300, 150);
             setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+            setLocationRelativeTo(null);
+
 
             JPanel panel = new JPanel();
             JLabel passwordLabel = new JLabel("Enter a new Password:");
@@ -71,6 +73,9 @@ public class enterWindow extends JFrame{
                 super("Deez Nutz Inc - Username Change");
                 setSize(300, 150);
                 setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                setLocationRelativeTo(null);
+
+
 
                 JPanel panel = new JPanel();
                 JLabel usernameLabel = new JLabel("Enter a Unique Username:");
@@ -152,6 +157,7 @@ public class enterWindow extends JFrame{
             super("Deez Nutz Inc - User Registration");
             setSize(300, 200);
             setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            setLocationRelativeTo(null);
 
             JPanel panel = new JPanel();
             JLabel usernameLabel = new JLabel("Enter a Unique Username:");
@@ -223,6 +229,7 @@ public class enterWindow extends JFrame{
             super("Deez Nutz Inc - User Login");
             setSize(300, 200);
             setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            setLocationRelativeTo(null);
 
             JPanel panel = new JPanel();
             JLabel usernameLabel = new JLabel("Username:");

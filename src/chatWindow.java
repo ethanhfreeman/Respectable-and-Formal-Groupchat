@@ -4,19 +4,21 @@ import java.awt.event.*;
 
 public class chatWindow extends JFrame {
 
-    static String currentChatroom;
-    static String currentUser;
+    String currentChatroom;
+    String currentUser;
     private JTextArea messageArea;
     private JTextField inputField;
+
+    JList<String> list;
 
     public static class ChatroomCreater extends JFrame {
         private static JTextField nameField;
 
         public ChatroomCreater(String incomingUser) {
             super("Deez Nutz Inc - Chatroom Creater");
-            currentUser = incomingUser;
             setSize(400, 125);
             setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+            setLocationRelativeTo(null);
 
             JPanel panel = new JPanel();
             JLabel nameLabel = new JLabel("Enter a Unique Chatroom Name:");
@@ -26,7 +28,7 @@ public class chatWindow extends JFrame {
             panel.add(nameField);
 
             JButton addButton = new JButton("Add");
-            addButton.addActionListener(e -> addRoom());
+            addButton.addActionListener(e -> addRoom(incomingUser));
             panel.add(addButton);
 
             JButton goBackButton = new JButton("Go Back");
@@ -43,7 +45,7 @@ public class chatWindow extends JFrame {
 
         }
 
-        private void addRoom() {
+        private void addRoom(String incomingUser) {
             String chatroomName = nameField.getText();
 
             if (chatroomName.equals("")) {
@@ -62,12 +64,14 @@ public class chatWindow extends JFrame {
                 return;
             }
             Database.insertChatroom("chatroom", chatroomName);
-            Database.insertUserToChatroom("users_chatroom", currentUser, chatroomName);
+            Database.deleteUser("users_chatroom", incomingUser);
+            Database.insertUserToChatroom("users_chatroom", incomingUser, chatroomName);
+            System.out.println("Joining");
             String successMessage = "Success! Welcome to " + chatroomName + "!";
             JOptionPane.showMessageDialog(null, successMessage, "Success", JOptionPane.INFORMATION_MESSAGE);
             dispose();
             chatroomList.refresh();
-            new chatWindow(chatroomName, currentUser);
+            new chatWindow(chatroomName, incomingUser);
 
         }
 
@@ -78,10 +82,16 @@ public class chatWindow extends JFrame {
 
         super("" + currentChatroom + " Chat Window");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        //user will be removed on exit
+        setLocationRelativeTo(null);
 
         this.currentChatroom = currentChatroom;
 
         Database.loaded = 0;
+        //insert user when joining
+
+        //remove user when leaving
+
 
 
         //text area to display messages
@@ -95,6 +105,12 @@ public class chatWindow extends JFrame {
         inputField.addActionListener(e -> send(currentUser));
         add(inputField, BorderLayout.SOUTH);
 
+        //list for user view
+        JPanel userPanel = new JPanel();
+        list = new JList<>(Database.printActiveUsers(currentChatroom).toArray(new String[0]));
+        userPanel.add(list);
+        add(userPanel, BorderLayout.NORTH);
+
         JButton resetButton = new JButton("Reset");
         resetButton.addActionListener(e -> reset());
 
@@ -103,7 +119,7 @@ public class chatWindow extends JFrame {
 
         init();
         // Create a new timer with an interval of 1 second
-        Timer timer = new Timer(500, e -> {
+        Timer timer = new Timer(1000, e -> {
             // refresh
             activate();
         });
@@ -114,6 +130,21 @@ public class chatWindow extends JFrame {
 
         pack();
         setVisible(true);
+    }
+    @Override
+    protected void processWindowEvent(WindowEvent e) {
+        super.processWindowEvent(e);
+
+        if (e.getID() == WindowEvent.WINDOW_CLOSING) {
+            //leave chatroom and wipe currentChatrooom variable
+            exit(currentUser);
+        }
+    }
+
+    public void exit(String currentUser){
+        Database.deleteUser("users_chatroom", currentUser);
+        Database.loaded = 0;
+        currentChatroom = "";
     }
 
     public void send(String currentUser) {
@@ -137,7 +168,8 @@ public class chatWindow extends JFrame {
                 messageArea.append("2\n");
             }
             else if (message.equals("/leave")) {
-                messageArea.append("3\n");
+                exit(currentUser);
+                dispose();
             }
 
             else {
@@ -162,6 +194,9 @@ public class chatWindow extends JFrame {
         for (String message : Database.printNewMessages(currentChatroom)) {
             messageArea.append(message + "\n");
         }
+
+        list.setListData(Database.printActiveUsers(currentChatroom).toArray(new String[0]));
+        list.repaint();
 
     }
 

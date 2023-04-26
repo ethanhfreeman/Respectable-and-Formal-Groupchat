@@ -4,7 +4,8 @@ public class mainGUIRuntime {
 
     public static void main(String[] args) {
         try{
-            Database.connect("usersdb");
+//            Database.connect("usersdb");
+            Database.connectOnline();
             int dialogResult = JOptionPane.showConfirmDialog(null, "Do you want to reset the internal database?", "Confirmation", JOptionPane.YES_NO_OPTION);
             if(dialogResult == JOptionPane.YES_OPTION){
                 Database.deleteUsersChatroom();

@@ -1,3 +1,5 @@
+import org.postgresql.jdbc.SslMode;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.*;
@@ -13,27 +15,28 @@ public class chatroomList extends JFrame {
     // list of chatrooms to display
 
     public chatroomList(ArrayList<String> chatrooms, String currentUser) {
-        // Set up the JFrame
+
         setTitle("Chatroom List");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(400, 400);
         setLayout(new BorderLayout());
+        setLocationRelativeTo(null);
 
-        // Create a JList to display the chatrooms
+        //List to display the chatrooms
         chatroomList = new JList<>(chatrooms.toArray(new String[0]));
-
-        // Add the JList to a JScrollPane
         JScrollPane scrollPane = new JScrollPane(chatroomList);
-
-        // Add the JScrollPane to the center of the JFrame
         add(scrollPane, BorderLayout.CENTER);
 
-        // Add a button to allow the user to join the selected chatroom
+        //Button to allow the user to join the selected chatroom
         JButton joinButton = new JButton("Join");
         joinButton.addActionListener(e -> {
             String selectedChatroom = chatroomList.getSelectedValue();
             if (selectedChatroom != null) {
+                Database.loaded = 0;
+                System.out.println("Joining");
+                Database.insertUserToChatroom("users_chatroom", currentUser, selectedChatroom);
                 new chatWindow(selectedChatroom, currentUser);
+
 
             }
         });
@@ -41,6 +44,7 @@ public class chatroomList extends JFrame {
         JButton createButton = new JButton("Create Room");
         createButton.addActionListener(new ActionListener() {
                public void actionPerformed(ActionEvent e) {
+                   Database.loaded = 0;
                    new chatWindow.ChatroomCreater(currentUser);
                    refresh();
                }

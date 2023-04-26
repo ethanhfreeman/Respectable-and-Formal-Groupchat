@@ -7,7 +7,24 @@ public class Database {
     private static java.sql.Connection c = null;
 	private static Statement stmt = null;
 
-	public static int loaded = 0;
+	public static int loaded;
+
+
+	public static void connectOnline() throws Exception {
+
+		try {
+			String url = "jdbc:postgresql://dpg-ch4l47ss3fvjtidtvj30-a.oregon-postgres.render.com:5432/usersdb_8irl";
+			String username = "usersdb_8irl_user";
+			String password = "zpmuiLSPLUw6sO8B0qojjHa3lB42bhLD";
+			c = DriverManager.getConnection(url, username, password);
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.err.println(e.getClass().getName() + ": " + e.getMessage());
+			System.exit(0);
+		}
+
+	}
+
 
     public static void connect(String tableName) throws Exception {
         try {
@@ -145,7 +162,7 @@ public class Database {
 		try{
 			c.setAutoCommit(false);
 			stmt = c.createStatement();
-			String sql = "DROP TABLE users_messages;" ;
+			String sql = "DROP TABLE IF EXISTS users_messages;" ;
 			stmt.executeUpdate(sql);
 			c.commit();
 		}
@@ -229,7 +246,7 @@ public static void removeUserFromChatroom(String tableName, String username, Str
 	try{
 		c.setAutoCommit(false);
 		stmt = c.createStatement();			
-		String sql = "delete  from " + tableName + "where username = " + "'" + username + "');" ;
+		String sql = "DELETE FROM " + tableName + "WHERE username = " + "'" + username + "';" ;
 		stmt.executeUpdate(sql);
 		c.commit();
 	} catch (Exception e) {
@@ -264,6 +281,7 @@ public static void removeUserFromChatroom(String tableName, String username, Str
 			String sql = "DELETE FROM " + tableName + " WHERE username = '" + username + "';";
 			stmt.executeUpdate(sql);
 			c.commit();
+			System.out.println("DELETED");
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -419,8 +437,9 @@ public static void removeUserFromChatroom(String tableName, String username, Str
 	
 	
 	
-	public static void printActiveUsers(String chatName) {
+	public static ArrayList<String> printActiveUsers(String chatName) {
 		String desiredUser = null;
+		ArrayList<String> userList = new ArrayList<>();
 		
 		try {
 			stmt = c.createStatement();
@@ -430,7 +449,7 @@ public static void removeUserFromChatroom(String tableName, String username, Str
 			ResultSet rs = stmt.executeQuery(sql);
 			while (rs.next()) {
 				desiredUser = rs.getString(1);
-				System.out.println(desiredUser);
+				userList.add(desiredUser);
 			}
 			rs.close();
 			stmt.close();
@@ -441,6 +460,7 @@ public static void removeUserFromChatroom(String tableName, String username, Str
 			System.exit(0);
 		}
 		finally {
+			return userList;
 		}
 	}
 	public static ArrayList<String> getMessages(String chatName) {
@@ -529,6 +549,11 @@ public static void removeUserFromChatroom(String tableName, String username, Str
 		}
 		finally {
 			return desiredObj;
+		}
+	}
+	public class LoadedList{
+		public LoadedList(){
+
 		}
 	}
 	
