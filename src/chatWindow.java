@@ -6,8 +6,6 @@ public class chatWindow extends JFrame {
 
     static String currentChatroom;
     static String currentUser;
-
-    public static int currentKnownMessages;
     private JTextArea messageArea;
     private JTextField inputField;
 
@@ -82,6 +80,8 @@ public class chatWindow extends JFrame {
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
         this.currentChatroom = currentChatroom;
+
+        Database.loaded = 0;
 
 
         //text area to display messages

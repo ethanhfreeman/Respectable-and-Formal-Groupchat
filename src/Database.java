@@ -7,6 +7,8 @@ public class Database {
     private static java.sql.Connection c = null;
 	private static Statement stmt = null;
 
+	public static int loaded = 0;
+
     public static void connect(String tableName) throws Exception {
         try {
             String url = "jdbc:postgresql://localhost/" + tableName + "?user=" + localHostInfo.getLocalUserName() + "&password=" + localHostInfo.getLocalPassword() +"&ssl=false";
@@ -454,7 +456,7 @@ public static void removeUserFromChatroom(String tableName, String username, Str
 	    	
 	    	while (!selectMessageWithChatname(chatName, currentId).equals("null-> null")) {
 	    	msgHistory.add(Database.selectMessageWithChatname(chatName, currentId));
-	    	chatWindow.currentKnownMessages++;
+			loaded++;
 	    	
 	    	if (getNextMessageId(chatName, currentId) == null) {
 	    		currentId++;
@@ -573,11 +575,11 @@ public static void removeUserFromChatroom(String tableName, String username, Str
 			
 			//REVIEW THIS PART UNDER HERE FOR LOGIC ERRORS ------ HASNT BEEN TESTED
 			int newMessages = 0;
-			for (int j = chatWindow.currentKnownMessages; j <= messages.size() - 1; j++  ) {
+			for (int j = loaded; j <= messages.size() - 1; j++  ) {
 				messagesToGive.add(Database.selectMessageWithChatname(chatName, messages.get(j)));
 				newMessages++;
 			}
-			chatWindow.currentKnownMessages  += newMessages;
+			loaded += newMessages;
 
 
 		} catch (Exception e) {

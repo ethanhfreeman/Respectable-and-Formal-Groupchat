@@ -33,7 +33,6 @@ public class chatroomList extends JFrame {
         joinButton.addActionListener(e -> {
             String selectedChatroom = chatroomList.getSelectedValue();
             if (selectedChatroom != null) {
-                chatWindow.currentKnownMessages = 0;
                 new chatWindow(selectedChatroom, currentUser);
 
             }
@@ -42,7 +41,6 @@ public class chatroomList extends JFrame {
         JButton createButton = new JButton("Create Room");
         createButton.addActionListener(new ActionListener() {
                public void actionPerformed(ActionEvent e) {
-                   chatWindow.currentKnownMessages = 0;
                    new chatWindow.ChatroomCreater(currentUser);
                    refresh();
                }
