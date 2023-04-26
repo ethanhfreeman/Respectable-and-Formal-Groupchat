@@ -104,11 +104,19 @@ public class enterWindow extends JFrame{
         }
         private void changeName(){
             String username = usernameField.getText();
+
             if (username.equals("")) {
                 String errorString = "ERROR : Please fill out the field.";
                 JOptionPane.showMessageDialog(null, errorString, "Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }
+
+            if (username.equals(currentUser)) {
+                String errorString = "ERROR : Changed username cannot be same as current username.";
+                JOptionPane.showMessageDialog(null, errorString, "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
             if (!username.matches("[a-zA-Z0-9]+")) {
                 String errorString = "ERROR: Please, no weird symbols. Try another username.";
                 JOptionPane.showMessageDialog(null, errorString, "Error", JOptionPane.ERROR_MESSAGE);

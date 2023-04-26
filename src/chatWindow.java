@@ -4,14 +4,14 @@ import java.awt.event.*;
 
 public class chatWindow extends JFrame {
 
-    String currentChatroom;
+    static String currentChatroom;
+    static String currentUser;
+
     public static int currentKnownMessages;
-    String currentUser;
     private JTextArea messageArea;
     private JTextField inputField;
 
     public static class ChatroomCreater extends JFrame {
-        private final String currentUser;
         private static JTextField nameField;
 
         public ChatroomCreater(String incomingUser) {
@@ -33,10 +33,10 @@ public class chatWindow extends JFrame {
 
             JButton goBackButton = new JButton("Go Back");
             goBackButton.addActionListener(new ActionListener() {
-                                               public void actionPerformed(ActionEvent e) {
-                                                   dispose();
-                                               }
-                                           }
+                   public void actionPerformed(ActionEvent e) {
+                       dispose();
+                   }
+               }
             );
             panel.add(goBackButton);
 
@@ -78,11 +78,12 @@ public class chatWindow extends JFrame {
     public chatWindow(String currentChatroom, String currentUser) {
 
 
-        super(currentChatroom + " Chat Window");
-
-        this.currentKnownMessages = 0;
+        super("" + currentChatroom + " Chat Window");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
         this.currentChatroom = currentChatroom;
+
+
         //text area to display messages
         messageArea = new JTextArea(10, 30);
         messageArea.setEditable(false);
@@ -92,11 +93,13 @@ public class chatWindow extends JFrame {
         // input field for user to enter messages
         inputField = new JTextField(30);
         inputField.addActionListener(e -> send(currentUser));
-        add(inputField, BorderLayout.LINE_END);
+        add(inputField, BorderLayout.SOUTH);
 
         JButton resetButton = new JButton("Reset");
         resetButton.addActionListener(e -> reset());
-        add(resetButton, BorderLayout.SOUTH);
+
+        //DEBUG
+        //add(resetButton, BorderLayout.SOUTH);
 
         init();
         // Create a new timer with an interval of 1 second
@@ -119,8 +122,33 @@ public class chatWindow extends JFrame {
         inputField.setText("");
 
 //        messageArea.append(currentUser + ": " + message + "\n");
-        Database.insertMessage("users_messages", currentUser, message, currentChatroom);
-        activate();
+        if (message.equals("") || message.replaceAll("\\s", "").equals("")){
+            messageArea.append("Please send an actual message and not blank space.\n");
+        }
+
+        else if (message.charAt(0) == '/'){
+            if (message.equals("/help")) {
+                messageArea.append("Valid chat commands include:\n     /help\n     /list\n     /history\n     /leave\n");
+            }
+            else if (message.equals("/list")) {
+                messageArea.append("1\n");
+            }
+            else if (message.equals("/history")) {
+                messageArea.append("2\n");
+            }
+            else if (message.equals("/leave")) {
+                messageArea.append("3\n");
+            }
+
+            else {
+                messageArea.append("ERROR: Unknown command.\n Use /help for a list of commands.\n");
+            }
+        }
+
+        else {
+            Database.insertMessage("users_messages", currentUser, message, currentChatroom);
+            activate();
+        }
     }
 
     public void init() {
@@ -138,7 +166,6 @@ public class chatWindow extends JFrame {
     }
 
     public void reset() {
-         chatWindow.currentKnownMessages = 0;
     }
 
 }

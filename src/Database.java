@@ -441,7 +441,6 @@ public static void removeUserFromChatroom(String tableName, String username, Str
 		finally {
 		}
 	}
-	
 	public static ArrayList<String> getMessages(String chatName) {
 		
 		ArrayList<String> msgHistory = new ArrayList<>();
@@ -535,7 +534,7 @@ public static void removeUserFromChatroom(String tableName, String username, Str
 		//example current known messages is 5 but there are 6 total messages in baller2
 		String totalMessagesStr = "";
 		int totalMessages = 0;
-		ArrayList<String> messagesR = new ArrayList<String>();
+		ArrayList<String> messagesToGive = new ArrayList<String>();
 
 		try {
 			stmt = c.createStatement();
@@ -567,26 +566,26 @@ public static void removeUserFromChatroom(String tableName, String username, Str
 				stmt.close();
 			
 //			int idOfListForCurrentMessage = 0;
-//			for (int i = 0; i <= Main.currentKnownMessages; i++) {
-//				idOfListForCurrentMessage++; // now we should  have the index of the next chat message that has not been seen by the user 
+//			for (int i = 0; i <= chatWindow.currentKnownMessages; i++) {
+//				idOfListForCurrentMessage++; // now we should  have the index of the next chat message that has not been seen by the user
 //			}
-//			
+
 			
 			//REVIEW THIS PART UNDER HERE FOR LOGIC ERRORS ------ HASNT BEEN TESTED
 			int newMessages = 0;
 			for (int j = chatWindow.currentKnownMessages; j <= messages.size() - 1; j++  ) {
-				messagesR.add(Database.selectMessageWithChatname(chatName, messages.get(j)));
+				messagesToGive.add(Database.selectMessageWithChatname(chatName, messages.get(j)));
 				newMessages++;
 			}
+			chatWindow.currentKnownMessages  += newMessages;
 
-			chatWindow.currentKnownMessages += newMessages;
-		
+
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.err.println(e.getClass().getName() + ": " + e.getMessage());
 			System.exit(0);
 		}
-		return messagesR;
+		return messagesToGive;
 		
 	}
 	
