@@ -57,8 +57,6 @@ public class chatroomList extends JFrame {
                     if (selected != null) {
                         onlineList.setListData(Database.printActiveUsers(chatroomList.getSelectedValue()).toArray(new String[0]));
 
-                    } else {
-
                     }
                 }
 
