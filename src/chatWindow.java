@@ -18,7 +18,7 @@ public class chatWindow extends JFrame {
     private JTextArea messageArea;
     private JTextField inputField;
 
-    JList<String> list;
+    JList<String> userList;
 
     public static class ChatroomCreater extends JFrame {
         private static JTextField nameField;
@@ -129,8 +129,8 @@ public class chatWindow extends JFrame {
 
         //list for user view
         JPanel userPanel = new JPanel();
-        list = new JList<>(Database.printActiveUsers(currentChatroom).toArray(new String[0]));
-        userPanel.add(list);
+        userList = new JList<>(Database.printActiveUsers(currentChatroom).toArray(new String[0]));
+        userPanel.add(userList);
         add(userPanel, BorderLayout.NORTH);
 
         JButton resetButton = new JButton("Reset");
@@ -140,7 +140,7 @@ public class chatWindow extends JFrame {
         //add(resetButton, BorderLayout.SOUTH);
 
         init();
-        // Create a new timer with an interval of 1 second
+        // New timer that will go every second
         chatTimer = new Timer(1000, e -> {
             // refresh
             activate();
@@ -220,8 +220,7 @@ public class chatWindow extends JFrame {
             messageArea.append(message + "\n");
         }
 
-        list.setListData(Database.printActiveUsers(currentChatroom).toArray(new String[0]));
-        list.repaint();
+        userList.setListData(Database.printActiveUsers(currentChatroom).toArray(new String[0]));
 
     }
 

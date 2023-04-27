@@ -197,7 +197,18 @@ public class Database {
 	 * THIS IS USED TO INSERT A MESSAGE INTO users_messages
 	 */
 	public static void insertMessage(String tableName, String username, String content, String chatName) {
-		
+		//ENCODE SINGE QUOTES TO PREVENT SQL CONFUSION
+
+		String encodedContent = "";
+
+		for (int i = 0; i < content.length(); i++) {
+			if (content.charAt(i) == '\'') { // Check if the character is found in the string
+				encodedContent += "'" + '\'';
+			} else {
+				encodedContent += content.charAt(i);
+			}
+		}
+
 		try{
 			//this section generates the newest id for insertion
 			int startingId = 1;
@@ -209,7 +220,7 @@ public class Database {
 			c.setAutoCommit(false);
 			stmt = c.createStatement();			
 			String sql = "INSERT INTO " + tableName + "(username, chatname, content, id)" +
-					" VALUES('" + username + "', '" + chatName + "', '" + content + "', " + startingId +");" ;
+					" VALUES('" + username + "', '" + chatName + "', '" + encodedContent + "', " + startingId +");" ;
 			stmt.executeUpdate(sql);
 			c.commit();
 			Main.currentKnownMessages++; //we don't want the print new messages to print their messages that they sent
@@ -281,7 +292,7 @@ public static void removeUserFromChatroom(String tableName, String username, Str
 			String sql = "DELETE FROM " + tableName + " WHERE username = '" + username + "';";
 			stmt.executeUpdate(sql);
 			c.commit();
-			System.out.println("DEBUG: Left Room");
+			System.out.println("DEBUG: Left Room Reference");
 
 		} catch (Exception e) {
 			e.printStackTrace();
