@@ -166,8 +166,7 @@ public class enterWindow extends JFrame{
                 return;
 
             }
-            Database.deleteUser("users_chatroom", currentUser);
-            Database.deleteUser("users_messages", currentUser);
+
             Database.updateWithoutID("users", "name", username, currentUser);
 
 

@@ -117,7 +117,7 @@ public class Database {
 			c.setAutoCommit(false);
 			stmt = c.createStatement();
 			String sql = "CREATE TABLE IF NOT EXISTS users_chatroom(username varchar(30), chatname varchar(30), " +
-					"FOREIGN KEY (username) REFERENCES users(name), FOREIGN KEY (chatname) REFERENCES chatroom(name));";
+					"FOREIGN KEY (username) REFERENCES users(name) ON UPDATE CASCADE, FOREIGN KEY (chatname) REFERENCES chatroom(name));";
 			stmt.executeUpdate(sql);
 			c.commit();
 		}
@@ -148,7 +148,7 @@ public class Database {
 			stmt = c.createStatement();
 			String sql = "CREATE TABLE IF NOT EXISTS users_messages (username varchar(30), " +
 					"chatname varchar(30), content varchar(50), id int primary key, FOREIGN KEY (username) " +
-					"REFERENCES users(name), FOREIGN KEY (chatname) references chatroom(name));" ;
+					"REFERENCES users(name) ON UPDATE CASCADE, FOREIGN KEY (chatname) references chatroom(name));" ;
 			stmt.executeUpdate(sql);
 			c.commit();
 		}
