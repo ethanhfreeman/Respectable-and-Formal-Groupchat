@@ -10,11 +10,43 @@ public class enterWindow extends JFrame{
     private static JPasswordField passwordField;
 
 
+    public static class accountDeletionWindow extends  JFrame{
+        public accountDeletionWindow(){
+            Object[] options = {"Yes", "No"};
+            int choice = JOptionPane.showOptionDialog(null,
+                    "Are you sure you want to delete your account?",
+                    "Deez Nutz Inc ChatRoom",
+                    JOptionPane.DEFAULT_OPTION,
+                    JOptionPane.INFORMATION_MESSAGE,
+                    null,
+                    options,
+                    options[0]);
 
+                    switch (choice){
+                        case 0:
+                            //delete option selected
+                            Database.deleteUser("users_messages", currentUser);
+                            Database.deleteUser("users_chatroom", currentUser);
+                            Database.deleteActualUser(currentUser);
+                            dispose();
+                            String successMessage = "Account has been deleted! Goodbye";
+                            JOptionPane.showMessageDialog(null, successMessage, "Success", JOptionPane.INFORMATION_MESSAGE);
+                            currentUser = "";
+                            new choiceMenu();
+                            dispose();
+                            break;
+                        case 1:
+                            //user changes mind
+                            new enterWindow.accountView();
+                            dispose();
+                            break;
+                    }
+        }
+    }
     public static class passwordChangeWindow extends JFrame{
         public passwordChangeWindow(){
             super("Deez Nutz Inc - Password Change");
-            setSize(300, 150);
+            setSize(300, 125);
             setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
             setLocationRelativeTo(null);
 
@@ -71,7 +103,7 @@ public class enterWindow extends JFrame{
     public static class usernameChangeWindow extends JFrame{
         public usernameChangeWindow(){
                 super("Deez Nutz Inc - Username Change");
-                setSize(300, 150);
+                setSize(300, 125);
                 setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
                 setLocationRelativeTo(null);
 
@@ -155,7 +187,7 @@ public class enterWindow extends JFrame{
 
         public userRegisterWindow() {
             super("Deez Nutz Inc - User Registration");
-            setSize(300, 200);
+            setSize(300, 175);
             setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             setLocationRelativeTo(null);
 
@@ -227,7 +259,7 @@ public class enterWindow extends JFrame{
     public static class userLoginWindow extends JFrame {
         public userLoginWindow() {
             super("Deez Nutz Inc - User Login");
-            setSize(300, 200);
+            setSize(300, 175);
             setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             setLocationRelativeTo(null);
 
@@ -290,30 +322,34 @@ public class enterWindow extends JFrame{
     }
     public static class mainView extends JFrame{
         public mainView(){
-            Object[] options = {"Room Browser", "Update account information","Logout"};
-            int choice = JOptionPane.showOptionDialog(null,
-                    "Welcome " + currentUser + "!\nPlease select from the following options:",
+            this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            Object[] options = {"Room Browser", "Manage Account","Logout"};
+            int choice = JOptionPane.showOptionDialog(this,
+                    "Welcome, " + currentUser + "!\nPlease select from the following options:",
                     "Deez Nutz Inc - Main View.",
                     JOptionPane.DEFAULT_OPTION,
                     JOptionPane.INFORMATION_MESSAGE,
-                    null,
+                    imageCollection.mainIcon,
                     options,
                     options[0]);
             //display list of options
             switch (choice){
                 case 0:
-                    // Create room option selected
+                    // room browser option selected
                     new chatroomList(Database.getAllChatroomNames(),currentUser);
+                    dispose();
                     break;
                 case 1:
-                    // Change username & password option selected
+                    // Account management option selected
                     new enterWindow.accountView();
+                    dispose();
                     break;
                 case 2:
                     // Logout option selected
                     // CLEAR CURRENT USER
                     currentUser = "";
                     new choiceMenu();
+                    dispose();
                     break;
             }
 
@@ -323,29 +359,38 @@ public class enterWindow extends JFrame{
     }
     public static class accountView extends JFrame{
     public accountView() {
-        Object[] options = {"Change Username", "Change Password", "Back To Main View"};
-        int choice = JOptionPane.showOptionDialog(null,
+        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        Object[] options = {"Back To Main View","Change Username","Change Password","Delete Account"};
+        int choice = JOptionPane.showOptionDialog(this,
                 "Please select from the following options:",
                 "Deez Nutz Inc - Account Management",
                 JOptionPane.DEFAULT_OPTION,
                 JOptionPane.INFORMATION_MESSAGE,
-                null,
+                imageCollection.settingsIcon,
                 options,
                 options[0]);
         pack();
         //display list of options
         switch (choice) {
             case 0:
-                // Change username
-                new usernameChangeWindow();
-                break;
-            case 1:
-                // Change password
-                new passwordChangeWindow();
-                break;
-            case 2:
                 //Go Back
                 new enterWindow.mainView();
+                dispose();
+                break;
+            case 1:
+                // Change username
+                new usernameChangeWindow();
+                dispose();
+                break;
+            case 2:
+                // Change password
+                new passwordChangeWindow();
+                dispose();
+                break;
+            case 3:
+                //delete Account
+                new accountDeletionWindow();
+                dispose();
                 break;
         }
     }

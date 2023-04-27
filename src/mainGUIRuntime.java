@@ -6,7 +6,9 @@ public class mainGUIRuntime {
         try{
 //            Database.connect("usersdb");
             Database.connectOnline();
-            int dialogResult = JOptionPane.showConfirmDialog(null, "Do you want to reset the internal database?", "Confirmation", JOptionPane.YES_NO_OPTION);
+            JFrame firstWindow = new JFrame();
+            firstWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            int dialogResult = JOptionPane.showConfirmDialog(firstWindow, "<html><font color='red'>DEBUG WARNING: Do you want to reset the internal database?</font></html>", "Confirmation", JOptionPane.YES_NO_OPTION);
             if(dialogResult == JOptionPane.YES_OPTION){
                 Database.deleteUsersChatroom();
                 Database.deleteUserMessages();

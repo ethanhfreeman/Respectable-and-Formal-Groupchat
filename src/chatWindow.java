@@ -1,11 +1,20 @@
+import javax.sound.sampled.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.File;
+import java.io.IOException;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 
 public class chatWindow extends JFrame {
 
     String currentChatroom;
     String currentUser;
+
+    Timer chatTimer;
+
+    Clip chime;
     private JTextArea messageArea;
     private JTextField inputField;
 
@@ -63,6 +72,10 @@ public class chatWindow extends JFrame {
                 JOptionPane.showMessageDialog(null, errorString, "Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }
+            if (chatroomList.currentRoomView != null) {
+                chatroomList.currentRoomView.exit(incomingUser);
+                chatroomList.currentRoomView.dispose();
+            }
             Database.insertChatroom("chatroom", chatroomName);
             Database.deleteUser("users_chatroom", incomingUser);
             Database.insertUserToChatroom("users_chatroom", incomingUser, chatroomName);
@@ -71,7 +84,7 @@ public class chatWindow extends JFrame {
             JOptionPane.showMessageDialog(null, successMessage, "Success", JOptionPane.INFORMATION_MESSAGE);
             dispose();
             chatroomList.refresh();
-            new chatWindow(chatroomName, incomingUser);
+            chatroomList.currentRoomView = new chatWindow(chatroomName, incomingUser);
 
         }
 
@@ -81,11 +94,12 @@ public class chatWindow extends JFrame {
 
 
         super("" + currentChatroom + " Chat Window");
+        setSize(500, 300);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        //user will be removed on exit
         setLocationRelativeTo(null);
 
         this.currentChatroom = currentChatroom;
+        this.currentUser = currentUser;
 
         Database.loaded = 0;
         //insert user when joining
@@ -119,33 +133,27 @@ public class chatWindow extends JFrame {
 
         init();
         // Create a new timer with an interval of 1 second
-        Timer timer = new Timer(1000, e -> {
+        chatTimer = new Timer(1000, e -> {
             // refresh
             activate();
         });
 
         // Start the timer
-        timer.start();
+        chatTimer.start();
 
 
-        pack();
         setVisible(true);
-    }
-    @Override
-    protected void processWindowEvent(WindowEvent e) {
-        super.processWindowEvent(e);
-
-        if (e.getID() == WindowEvent.WINDOW_CLOSING) {
-            //leave chatroom and wipe currentChatrooom variable
-            exit(currentUser);
-        }
     }
 
     public void exit(String currentUser){
+        chatTimer.stop();
         Database.deleteUser("users_chatroom", currentUser);
         Database.loaded = 0;
-        currentChatroom = "";
+        this.currentChatroom = "";
+        this.currentUser = "";
+        dispose();
     }
+
 
     public void send(String currentUser) {
         // Get text from input field and add to message area
@@ -154,32 +162,33 @@ public class chatWindow extends JFrame {
 
 //        messageArea.append(currentUser + ": " + message + "\n");
         if (message.equals("") || message.replaceAll("\\s", "").equals("")){
-            messageArea.append("Please send an actual message and not blank space.\n");
+            messageArea.append("ERROR: Please send an actual message and not blank space.\n");
+            return;
         }
-
-        else if (message.charAt(0) == '/'){
-            if (message.equals("/help")) {
-                messageArea.append("Valid chat commands include:\n     /help\n     /list\n     /history\n     /leave\n");
-            }
-            else if (message.equals("/list")) {
-                messageArea.append("1\n");
-            }
-            else if (message.equals("/history")) {
-                messageArea.append("2\n");
-            }
-            else if (message.equals("/leave")) {
-                exit(currentUser);
-                dispose();
-            }
-
-            else {
-                messageArea.append("ERROR: Unknown command.\n Use /help for a list of commands.\n");
-            }
-        }
-
         else {
-            Database.insertMessage("users_messages", currentUser, message, currentChatroom);
-            activate();
+            if (message.length() > 50) {
+                messageArea.append("ERROR: Your message is too long, please shorten it.\n");
+            }
+            else if (message.charAt(0) == '/') {
+                if (message.equals("/help")) {
+                    messageArea.append("Valid chat commands include:\n     /help\n     /list\n     /history\n     /leave\n");
+                } else if (message.equals("/list")) {
+                    messageArea.append("1\n");
+                } else if (message.equals("/history")) {
+                    messageArea.append("2\n");
+                } else if (message.equals("/leave")) {
+                    exit(currentUser);
+                } else {
+                    messageArea.append("ERROR: Unknown command.\n Use /help for a list of commands.\n");
+                }
+            }
+            else {
+                LocalTime currentTime = LocalTime.now();
+                String time = currentTime.format(DateTimeFormatter.ofPattern("hh:mm "));
+                String timeMessage = time + " " + message;
+                Database.insertMessage("users_messages", currentUser, timeMessage, currentChatroom);
+                activate();
+            }
         }
     }
 
@@ -192,6 +201,7 @@ public class chatWindow extends JFrame {
 
     public void activate() {
         for (String message : Database.printNewMessages(currentChatroom)) {
+            //PLAY SOUND
             messageArea.append(message + "\n");
         }
 

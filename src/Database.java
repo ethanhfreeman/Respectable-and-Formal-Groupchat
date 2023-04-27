@@ -281,7 +281,52 @@ public static void removeUserFromChatroom(String tableName, String username, Str
 			String sql = "DELETE FROM " + tableName + " WHERE username = '" + username + "';";
 			stmt.executeUpdate(sql);
 			c.commit();
-			System.out.println("DELETED");
+			System.out.println("DEBUG: Left Room");
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.err.println(e.getClass().getName() + ": " + e.getMessage());
+			System.exit(0);
+		}
+	}
+	public static void deleteActualUser(String username){
+		try{
+			c.setAutoCommit(false);
+			stmt = c.createStatement();
+			String sql = "DELETE FROM users WHERE name = '" + username + "';";
+			stmt.executeUpdate(sql);
+			c.commit();
+			System.out.println("DEBUG: Left Room");
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.err.println(e.getClass().getName() + ": " + e.getMessage());
+			System.exit(0);
+		}
+	}
+	public static void deleteRoomReference(String tableName, String roomname){
+		try{
+			c.setAutoCommit(false);
+			stmt = c.createStatement();
+			String sql = "DELETE FROM " + tableName + " WHERE chatname = '" + roomname + "';";
+			stmt.executeUpdate(sql);
+			c.commit();
+			System.out.println("DEBUG: Deleted Room");
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.err.println(e.getClass().getName() + ": " + e.getMessage());
+			System.exit(0);
+		}
+	}
+	public static void deleteRoom(String roomname){
+		try{
+			c.setAutoCommit(false);
+			stmt = c.createStatement();
+			String sql = "DELETE FROM chatroom WHERE name = '" + roomname + "';";
+			stmt.executeUpdate(sql);
+			c.commit();
+			System.out.println("DEBUG: Deleted Room");
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -402,6 +447,7 @@ public static void removeUserFromChatroom(String tableName, String username, Str
 			System.err.println(e.getClass().getName() + ": " + e.getMessage());
 			System.exit(0);
 		}
+		System.out.println("DEBUG: LOADING ROOMS");
 		return chatroomNames;
 	}
 	
@@ -423,7 +469,12 @@ public static void removeUserFromChatroom(String tableName, String username, Str
 			}
 			rs.close();
 			stmt.close();
-			returnString = desiredUser + "-> " + desiredMessage;
+			if (desiredMessage == null) {
+				returnString = desiredUser + "-> " + desiredMessage;
+			}
+			else {
+				returnString = desiredMessage.substring(0,6) + desiredUser + "-> " + desiredMessage.substring(6);
+			}
 			return returnString;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -474,7 +525,7 @@ public static void removeUserFromChatroom(String tableName, String username, Str
 			}
 			int currentId =  (int)getFirstMessageId(chatName);
 	    	
-	    	while (!selectMessageWithChatname(chatName, currentId).equals("null-> null")) {
+	    	while (!selectMessageWithChatname(chatName, currentId).contains("null-> null")) {
 	    	msgHistory.add(Database.selectMessageWithChatname(chatName, currentId));
 			loaded++;
 	    	
