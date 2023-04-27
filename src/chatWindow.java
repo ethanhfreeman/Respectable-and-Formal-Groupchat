@@ -160,6 +160,7 @@ public class chatWindow extends JFrame {
         this.currentChatroom = "";
         this.currentUser = "";
         dispose();
+        chatroomList.refresh();
     }
 
 
@@ -181,9 +182,15 @@ public class chatWindow extends JFrame {
                 if (message.equals("/help")) {
                     messageArea.append("Valid chat commands include:\n     /help\n     /list\n     /history\n     /leave\n");
                 } else if (message.equals("/list")) {
-                    messageArea.append("1\n");
+                    messageArea.append("-----USERLIST-----\n");
+                    for (String userName : Database.printActiveUsers(currentChatroom)) {
+                        messageArea.append(userName + "\n");
+                    }
                 } else if (message.equals("/history")) {
-                    messageArea.append("2\n");
+                    messageArea.append("-----HISTORY------\n");
+                    for (String chatMessage : Database.getMessages(currentChatroom)) {
+                        messageArea.append(chatMessage + "\n");
+                    }
                 } else if (message.equals("/leave")) {
                     exit(currentUser);
                 } else {
