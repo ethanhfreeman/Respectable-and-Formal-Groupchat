@@ -43,6 +43,7 @@ public class chatWindow extends JFrame {
             JButton goBackButton = new JButton("Go Back");
             goBackButton.addActionListener(new ActionListener() {
                    public void actionPerformed(ActionEvent e) {
+
                        dispose();
                    }
                }
@@ -104,7 +105,14 @@ public class chatWindow extends JFrame {
         Database.loaded = 0;
         //insert user when joining
 
-        //remove user when leaving
+        addWindowListener(new WindowAdapter()
+        {
+            @Override
+            public void windowClosing(WindowEvent e)
+            {
+                exit(currentUser);
+            }
+        });
 
 
 
