@@ -2,12 +2,15 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 public class enterWindow extends JFrame{
     static String currentUser = "";
 
     private static JTextField usernameField;
     private static JPasswordField passwordField;
+
 
 
     public static class accountDeletionWindow extends  JFrame{
@@ -25,13 +28,14 @@ public class enterWindow extends JFrame{
                     switch (choice){
                         case 0:
                             //delete option selected
+                            Database.deleteUser("users_online", currentUser);
                             Database.deleteUser("users_messages", currentUser);
                             Database.deleteUser("users_chatroom", currentUser);
                             Database.deleteActualUser(currentUser);
+                            currentUser = "";
                             dispose();
                             String successMessage = "Account has been deleted! Goodbye";
                             JOptionPane.showMessageDialog(null, successMessage, "Success", JOptionPane.INFORMATION_MESSAGE);
-                            currentUser = "";
                             new choiceMenu();
                             dispose();
                             break;
@@ -250,6 +254,7 @@ public class enterWindow extends JFrame{
 
                 // Close window and go to user menu
                 currentUser = username;
+                Database.addUserOnline(currentUser);
                 dispose();
                 new enterWindow.mainView();
             }
@@ -305,6 +310,7 @@ public class enterWindow extends JFrame{
                 if (password.equals(Database.selectPassword("users", "name", username).toString().trim())) {
                     //SET LOGGED IN USER AS CURRENT USER
                     currentUser = username;
+                    Database.addUserOnline(currentUser);
                     dispose();
                     new enterWindow.mainView();
                 } else { //password was wrong, so they need to try again.
@@ -322,6 +328,7 @@ public class enterWindow extends JFrame{
     public static class mainView extends JFrame{
         public mainView(){
             this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
             Object[] options = {"Room Browser", "Manage Account","Logout"};
             int choice = JOptionPane.showOptionDialog(this,
                     "Welcome, " + currentUser + "!\nPlease select from the following options:",
@@ -346,6 +353,7 @@ public class enterWindow extends JFrame{
                 case 2:
                     // Logout option selected
                     // CLEAR CURRENT USER
+                    Database.deleteUser("users_online", currentUser);
                     currentUser = "";
                     new choiceMenu();
                     dispose();
@@ -391,7 +399,7 @@ public class enterWindow extends JFrame{
                 new accountDeletionWindow();
                 dispose();
                 break;
+            }
         }
     }
-}
 }

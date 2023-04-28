@@ -94,7 +94,7 @@ public class chatWindow extends JFrame {
     public chatWindow(String currentChatroom, String currentUser) {
 
 
-        super("" + currentChatroom + " Chat Window");
+        setTitle(currentUser + " - " + currentChatroom + " - LOADING");
         setSize(500, 300);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
@@ -129,7 +129,7 @@ public class chatWindow extends JFrame {
 
         //list for user view
         JPanel userPanel = new JPanel();
-        userList = new JList<>(Database.printActiveUsers(currentChatroom).toArray(new String[0]));
+        userList = new JList<>();
         userPanel.add(userList);
         add(userPanel, BorderLayout.NORTH);
 
@@ -148,8 +148,6 @@ public class chatWindow extends JFrame {
 
         // Start the timer
         chatTimer.start();
-
-
         setVisible(true);
     }
 
@@ -220,7 +218,29 @@ public class chatWindow extends JFrame {
             messageArea.append(message + "\n");
         }
 
-        userList.setListData(Database.printActiveUsers(currentChatroom).toArray(new String[0]));
+        int activeUsers = Database.printActiveUsers(currentChatroom).size();
+        String userNum;
+
+        if(activeUsers != 1 ){
+            userNum = " - [" + activeUsers + "] users in room";
+        }
+        else if (activeUsers == 0){
+            userNum = " - no users in room, wait you're not supposed to see this...";
+        }
+        else {
+            userNum = " - [" + activeUsers + "] user in room";
+        }
+
+        this.setTitle(currentUser + " - " + currentChatroom + userNum);
+
+        String [] usersList = Database.printActiveUsers(currentChatroom).toArray(new String[0]);
+
+        for (int i = 0; i < usersList.length; i++){
+            if (usersList[i].equals(currentUser)){
+                usersList[i] += " (me)";
+            }
+        }
+        userList.setListData(usersList);
 
     }
 

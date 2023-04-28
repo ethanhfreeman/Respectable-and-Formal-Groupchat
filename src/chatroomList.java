@@ -6,7 +6,7 @@ import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.util.ArrayList;
 public class chatroomList extends JFrame {
-    private String currentUser;
+    private static String currentUser;
 
     public static JList<String> chatroomList;
 
@@ -14,11 +14,15 @@ public class chatroomList extends JFrame {
 
     public static chatWindow currentRoomView;
     public static chatWindow.ChatroomCreater currentMadeRoomView;
+
+    public static JFrame currentWindow;
     // list of chatrooms to display
 
     public chatroomList(ArrayList<String> chatrooms, String currentUser) {
+        this.currentUser = currentUser;
+        currentWindow = this;
 
-        setTitle("Chatroom List");
+        setTitle("DEBUG MSG");
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         setSize(600, 300);
         setLayout(new BorderLayout());
@@ -38,8 +42,6 @@ public class chatroomList extends JFrame {
         onlineList = new JList<>(new DefaultListModel<>());
         JScrollPane userPane = new JScrollPane(onlineList);
 
-
-
         //List to display the chatrooms
 
 //        chatroomList = new JList<>(chatrooms.toArray(new String[0]));
@@ -55,7 +57,15 @@ public class chatroomList extends JFrame {
 
                     // Update the label based on the selection
                     if (selected != null) {
-                        onlineList.setListData(Database.printActiveUsers(chatroomList.getSelectedValue()).toArray(new String[0]));
+                        String [] usersList = Database.printActiveUsers(chatroomList.getSelectedValue()).toArray(new String[0]);
+
+                        for (int i = 0; i < usersList.length; ++i){
+                            if (usersList[i].equals(currentUser)){
+                                usersList[i] += " (me)";
+                            }
+                        }
+
+                        onlineList.setListData(usersList);
 
                     }
                 }
@@ -78,6 +88,7 @@ public class chatroomList extends JFrame {
                     currentRoomView.exit(currentUser);
                     currentRoomView.dispose();
                 }
+                Database.deleteUser("users_chatroom", currentUser);
                 Database.insertUserToChatroom("users_chatroom", currentUser, selectedChatroom);
                 refresh();
                 currentRoomView = new chatWindow(selectedChatroom, currentUser);
@@ -143,21 +154,36 @@ public class chatroomList extends JFrame {
 
     public static void refresh() {
         chatroomList.setListData(Database.getAllChatroomNames().toArray(new String[0]));
-        onlineList.setListData(Database.printActiveUsers(chatroomList.getSelectedValue()).toArray(new String[0]));
-        ArrayList<String> list = new ArrayList<>();
-        for (int i = 0; i < Database.getAllChatroomNames().size(); ++i){
-            list.addAll(Database.printActiveUsers(Database.getAllChatroomNames().get(i)));
-
-        }
         chatroomList.setCellRenderer(new ChatroomListRenderer());
         System.out.println("DEBUG: Finished Refreshing");
 
+        int onlineNum = 0;
+        String userNum;
+        //TODO INCORPORATE ALT METHOD USING AN ADDITIONAL TABLE IN THE DATABASE LISTING WHICH USERS ARE ONLINE
+//        for (String user : Database.printOnlineUsers()){
+//            onlineNum += 1;
+//        }
+        for (String chatroom: Database.getAllChatroomNames()){
+            onlineNum += Database.printActiveUsers(chatroom).size();
+        }
+
+        if (onlineNum == 0){
+            userNum = "No one online :(";
+        }
+        else if(onlineNum != 1 ){
+            userNum = "[" + onlineNum + "] users online";
+        }
+        else {
+            userNum = "[" + onlineNum + "] user online";
+        }
+
+        currentWindow.setTitle("Room Browser - " + userNum);
 
     }
 
     private static class ChatroomListRenderer extends DefaultListCellRenderer {
 
-        private int[] userCounts;
+        int[] userCounts;
 
         public ChatroomListRenderer() {
             userCounts = new int[Database.getAllChatroomNames().size()];
@@ -171,6 +197,8 @@ public class chatroomList extends JFrame {
 
         public Component getListCellRendererComponent(JList<?> list, Object value, int i, boolean isSelected, boolean cellHasFocus) {
             JLabel label = (JLabel) super.getListCellRendererComponent(list, value, i, isSelected, cellHasFocus);
+
+
             if (userCounts[i] == 0){
                 label.setText(value.toString());
             }

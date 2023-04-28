@@ -10,6 +10,7 @@ public class mainGUIRuntime {
             firstWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             int dialogResult = JOptionPane.showConfirmDialog(firstWindow, "<html><font color='red'>DEBUG WARNING: Do you want to reset the internal database?</font></html>", "Confirmation", JOptionPane.YES_NO_OPTION);
             if(dialogResult == JOptionPane.YES_OPTION){
+                Database.deleteUsersOnline();
                 Database.deleteUsersChatroom();
                 Database.deleteUserMessages();
                 Database.deleteChatroom();
@@ -19,6 +20,7 @@ public class mainGUIRuntime {
                 Database.createChatroom();
                 Database.createUserMessages();
                 Database.createUsersChatroom();
+                Database.createUsersOnline();
             }
         }
         catch(Exception e) {

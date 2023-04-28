@@ -83,6 +83,34 @@ public class Database {
 			System.exit(0);
 		}
 	}
+	public static void createUsersOnline(){
+		try{
+			c.setAutoCommit(false);
+			stmt = c.createStatement();
+			String sql = "CREATE TABLE IF NOT EXISTS users_online(username varchar(30), FOREIGN KEY (username) REFERENCES users(name) ON UPDATE CASCADE);";
+			stmt.executeUpdate(sql);
+			c.commit();
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			System.err.println(e.getClass().getName() + ": " + e.getMessage());
+			System.exit(0);
+		}
+	}
+	public static void deleteUsersOnline(){
+		try{
+			c.setAutoCommit(false);
+			stmt = c.createStatement();
+			String sql = "DROP TABLE IF EXISTS users_online;";
+			stmt.executeUpdate(sql);
+			c.commit();
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			System.err.println(e.getClass().getName() + ": " + e.getMessage());
+			System.exit(0);
+		}
+	}
 	public static void createChatroom(){
 		try{
 			c.setAutoCommit(false);
@@ -235,7 +263,7 @@ public class Database {
 	}
 	
 	
-public static void insertUserToChatroom(String tableName, String username, String chatName) {
+	public static void insertUserToChatroom(String tableName, String username, String chatName) {
 		
 		try{
 			c.setAutoCommit(false);
@@ -252,39 +280,21 @@ public static void insertUserToChatroom(String tableName, String username, Strin
 			
 	}
 
-public static void removeUserFromChatroom(String tableName, String username, String chatName) {
-	
-	try{
-		c.setAutoCommit(false);
-		stmt = c.createStatement();			
-		String sql = "DELETE FROM " + tableName + "WHERE username = " + "'" + username + "';" ;
-		stmt.executeUpdate(sql);
-		c.commit();
-	} catch (Exception e) {
-		e.printStackTrace();
-		System.err.println(e.getClass().getName() + ": " + e.getMessage());
-		System.exit(0);
-	}
-		
-}
-	
-	
-
-	public static void delete(String tableName, int id){
+	public static void addUserOnline(String username){
 		try{
 			c.setAutoCommit(false);
 			stmt = c.createStatement();
-			String sql = "DELETE FROM " + tableName + " WHERE id = " + id;
+			String sql = "INSERT INTO users_online(username)" +
+					" VALUES('" + username + "');" ;
 			stmt.executeUpdate(sql);
 			c.commit();
-
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.err.println(e.getClass().getName() + ": " + e.getMessage());
 			System.exit(0);
 		}
 	}
-	
+
 	public static void deleteUser(String tableName, String username){
 		try{
 			c.setAutoCommit(false);
@@ -502,7 +512,7 @@ public static void removeUserFromChatroom(String tableName, String username, Str
 	public static ArrayList<String> printActiveUsers(String chatName) {
 		String desiredUser = null;
 		ArrayList<String> userList = new ArrayList<>();
-		
+
 		try {
 			stmt = c.createStatement();
 			String sql = "SELECT username FROM users_chatroom WHERE chatname "
@@ -515,7 +525,32 @@ public static void removeUserFromChatroom(String tableName, String username, Str
 			}
 			rs.close();
 			stmt.close();
-			
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.err.println(e.getClass().getName() + ": " + e.getMessage());
+			System.exit(0);
+		}
+		finally {
+			return userList;
+		}
+	}
+	public static ArrayList<String> printOnlineUsers() {
+		String desiredUser = null;
+		ArrayList<String> userList = new ArrayList<>();
+
+		try {
+			stmt = c.createStatement();
+			String sql = "SELECT username FROM users_online;";
+			//System.out.println(sql);
+			ResultSet rs = stmt.executeQuery(sql);
+			while (rs.next()) {
+				desiredUser = rs.getString(1);
+				userList.add(desiredUser);
+			}
+			rs.close();
+			stmt.close();
+
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.err.println(e.getClass().getName() + ": " + e.getMessage());
