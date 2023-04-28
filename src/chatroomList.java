@@ -21,8 +21,6 @@ public class chatroomList extends JFrame {
     public chatroomList(ArrayList<String> chatrooms, String currentUser) {
         this.currentUser = currentUser;
         currentWindow = this;
-
-        setTitle("DEBUG MSG");
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         setSize(600, 300);
         setLayout(new BorderLayout());
@@ -41,11 +39,6 @@ public class chatroomList extends JFrame {
 
         onlineList = new JList<>(new DefaultListModel<>());
         JScrollPane userPane = new JScrollPane(onlineList);
-
-        //List to display the chatrooms
-
-//        chatroomList = new JList<>(chatrooms.toArray(new String[0]));
-//        chatroomList.setCellRenderer(new ChatroomListCellRenderer());
         chatroomList = new JList<>(new DefaultListModel<>());
         JScrollPane chatPane = new JScrollPane(chatroomList);
         chatroomList.addListSelectionListener(new ListSelectionListener() {
@@ -74,11 +67,12 @@ public class chatroomList extends JFrame {
             }
         });
 
-        //Button to allow the user to join the selected chatroom
+        //Button and panel grid
         JPanel windowSouth = new JPanel(new GridLayout(1, 3, 10, 20));
-        JPanel windowNorth = new JPanel(new GridLayout(1, 2, 10, 20));
-        JPanel windowCenter = new JPanel(new GridLayout(2,2,10,10));
+        JPanel windowNorth = new JPanel(new GridLayout(2, 2, 10, 20));
+        JPanel windowCenter = new JPanel(new GridLayout(1,2,10,10));
 
+        //Button to allow the user to join the selected chatroom
         JButton joinButton = new JButton("Join");
         joinButton.addActionListener(e -> {
             String selectedChatroom = chatroomList.getSelectedValue();
@@ -94,6 +88,7 @@ public class chatroomList extends JFrame {
                 currentRoomView = new chatWindow(selectedChatroom, currentUser);
             }
         });
+
         //Button to delete selected room
         //WON'T DELETE IF USERS INSIDE
         JButton deleteButton = new JButton("Delete");
@@ -118,6 +113,10 @@ public class chatroomList extends JFrame {
         JButton goBackButton = new JButton("Go Back");
         goBackButton.addActionListener(new ActionListener() {
                public void actionPerformed(ActionEvent e) {
+                   if (currentRoomView != null) {
+                       currentRoomView.exit(currentUser);
+                       currentRoomView.dispose();
+                   }
                    dispose();
                    new enterWindow.mainView();
                }
@@ -132,20 +131,32 @@ public class chatroomList extends JFrame {
                }
            }
         );
+        JLabel userLabel = new JLabel("Users Inside:");
+        JLabel roomLabel = new JLabel("Rooms:");
 
         windowSouth.add(joinButton);
         windowSouth.add(createButton);
         windowSouth.add(deleteButton);
 
+
+        windowNorth.add(roomLabel);
+        windowNorth.add(userLabel);
         windowNorth.add(refreshButton);
         windowNorth.add(goBackButton);
 
-        windowCenter.add(chatPane,0);
-        windowCenter.add(userPane, 1);
+//        JPanel userLayout = new JPanel();
+//        userLayout.add(userLabel, BorderLayout.PAGE_START);
+//        userLayout.add(userPane, BorderLayout.PAGE_END);
+
+//        JPanel chatroomLayout = new JPanel();
+//        chatroomLayout.add(roomLabel, BorderLayout.PAGE_START);
+//        chatroomLayout.add(chatPane, BorderLayout.PAGE_END);
+        windowCenter.add(chatPane);
+        windowCenter.add(userPane);
 
         add(windowCenter,BorderLayout.CENTER);
-        add(windowSouth, BorderLayout.SOUTH);
-        add(windowNorth, BorderLayout.NORTH);
+        add(windowSouth, BorderLayout.NORTH);
+        add(windowNorth, BorderLayout.SOUTH);
 
         // Display the JFrame
         refresh();
@@ -167,14 +178,19 @@ public class chatroomList extends JFrame {
             onlineNum += Database.printActiveUsers(chatroom).size();
         }
 
-        if (onlineNum == 0){
-            userNum = "No one online :(";
-        }
-        else if(onlineNum != 1 ){
-            userNum = "[" + onlineNum + "] users online";
-        }
-        else {
-            userNum = "[" + onlineNum + "] user online";
+        switch (onlineNum) {
+            case (0) : {
+                userNum = "No one online :(";
+                break;
+            }
+            case (1) : {
+                userNum = "[" + onlineNum + "] user online";
+                break;
+            }
+            default: {
+                userNum = "[" + onlineNum + "] users online";
+                break;
+            }
         }
 
         currentWindow.setTitle("Room Browser - " + userNum);
