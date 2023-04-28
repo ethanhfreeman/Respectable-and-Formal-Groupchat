@@ -4,19 +4,26 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 
-public class enterWindow extends JFrame{
+public class enterWindow {
     static String currentUser = "";
 
     private static JTextField usernameField;
     private static JPasswordField passwordField;
 
+    private static JPasswordField confirmPasswordField;
+
+    static JOptionPane userOptionPane;
 
 
-    public static class accountDeletionWindow extends  JFrame{
+
+
+
+    public static class accountDeletionWindow extends JFrame {
         public accountDeletionWindow(){
-            Object[] options = {"Yes", "No"};
-            int choice = JOptionPane.showOptionDialog(null,
+            Object[] options = {"No, Do Not Delete My Account", "Yes, Delete My Account"};
+            int choice = userOptionPane.showOptionDialog(null,
                     "Are you sure you want to delete your account?",
                     "Deez Nutz Inc ChatRoom",
                     JOptionPane.DEFAULT_OPTION,
@@ -25,23 +32,24 @@ public class enterWindow extends JFrame{
                     options,
                     options[0]);
 
+
                     switch (choice){
                         case 0:
+                            //user changes mind
+                            new enterWindow.accountView();
+                            dispose();
+                            break;
+                        case 1:
                             //delete option selected
                             Database.deleteUser("users_online", currentUser);
-                            Database.deleteUser("users_messages", currentUser);
+                            Database.updateOtherWithoutID("users_messages", "username","[DELETED USER]", currentUser);
                             Database.deleteUser("users_chatroom", currentUser);
                             Database.deleteActualUser(currentUser);
                             currentUser = "";
                             dispose();
-                            String successMessage = "Account has been deleted! Goodbye";
+                            String successMessage = "Account has been deleted. Returning to login window...";
                             JOptionPane.showMessageDialog(null, successMessage, "Success", JOptionPane.INFORMATION_MESSAGE);
                             new choiceMenu();
-                            dispose();
-                            break;
-                        case 1:
-                            //user changes mind
-                            new enterWindow.accountView();
                             dispose();
                             break;
                     }
@@ -50,17 +58,22 @@ public class enterWindow extends JFrame{
     public static class passwordChangeWindow extends JFrame{
         public passwordChangeWindow(){
             super("Deez Nutz Inc - Password Change");
-            setSize(300, 125);
+            setSize(300, 175);
             setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
             setLocationRelativeTo(null);
 
 
             JPanel panel = new JPanel();
-            JLabel passwordLabel = new JLabel("Enter a new Password:");
+            JLabel passwordLabel = new JLabel("Enter a New Password:");
             passwordField = new JPasswordField(20);
+            JLabel confirmPasswordLabel = new JLabel("Confirm New Password:");
+            confirmPasswordField = new JPasswordField(20);
+
 
             panel.add(passwordLabel);
             panel.add(passwordField);
+            panel.add(confirmPasswordLabel);
+            panel.add(confirmPasswordField);
 
 
             JButton changeButton = new JButton("Change Password");
@@ -82,20 +95,26 @@ public class enterWindow extends JFrame{
             setVisible(true);
         }
         private void changePassword(){
-            String password = new String(passwordField.getPassword());
+            String newPassword = new String(passwordField.getPassword());
+            String confirmPassword = new String(confirmPasswordField.getPassword());
             //this while loop makes sure that the input is only A-Z and 0-9
-            if (password.equals("")) {
-                String errorString = "ERROR : Please fill out the field.";
+            if (newPassword.equals("") || confirmPassword.equals("")) {
+                String errorString = "ERROR : Please fill out all fields.";
                 JOptionPane.showMessageDialog(null, errorString, "Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }
-            if (!password.matches("[a-zA-Z0-9]+")) {
-                String errorString = "ERROR: Please, no weird symbols. Try another password.";
+            if (!confirmPassword.equals(newPassword)){
+                String errorString = "ERROR : Password fields do not match.";
+                JOptionPane.showMessageDialog(null, errorString, "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            if (newPassword.length() > 30) {
+                String errorString = "ERROR : Changed username cannot be greater than 30 characters.";
                 JOptionPane.showMessageDialog(null, errorString, "Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }
             //Updates the users table to match the new password
-            Database.updateWithoutID("users", "password", password, currentUser);
+            Database.updateWithoutID("users", "password", newPassword, currentUser);
             String successMessage = "Success! Password has been changed!";
             JOptionPane.showMessageDialog(null, successMessage, "Success", JOptionPane.INFORMATION_MESSAGE);
             dispose();
@@ -158,8 +177,13 @@ public class enterWindow extends JFrame{
                 return;
             }
 
-            if (!username.matches("[a-zA-Z0-9]+")) {
-                String errorString = "ERROR: Please, no weird symbols. Try another username.";
+            if (username.length() > 30) {
+                String errorString = "ERROR : Changed username cannot be greater than 30 characters.";
+                JOptionPane.showMessageDialog(null, errorString, "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            if (username.equals("[DELETED USER]")) {
+                String errorString = "ERROR: Name not allowed";
                 JOptionPane.showMessageDialog(null, errorString, "Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }
@@ -190,7 +214,7 @@ public class enterWindow extends JFrame{
 
         public userRegisterWindow() {
             super("Deez Nutz Inc - User Registration");
-            setSize(300, 175);
+            setSize(300, 225);
             setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             setLocationRelativeTo(null);
 
@@ -199,11 +223,15 @@ public class enterWindow extends JFrame{
             usernameField = new JTextField(20);
             JLabel passwordLabel = new JLabel("Enter Password:");
             passwordField = new JPasswordField(20);
+            JLabel confirmPasswordLabel = new JLabel("Confirm Password:");
+            confirmPasswordField = new JPasswordField(20);
 
             panel.add(usernameLabel);
             panel.add(usernameField);
             panel.add(passwordLabel);
             panel.add(passwordField);
+            panel.add(confirmPasswordLabel);
+            panel.add(confirmPasswordField);
 
             JButton registerButton = new JButton("Register");
             registerButton.addActionListener(e -> register());
@@ -227,23 +255,30 @@ public class enterWindow extends JFrame{
         private void register(){
             String username = usernameField.getText();
             String password = new String(passwordField.getPassword());
+            String confirmPassword = new String(confirmPasswordField.getPassword());
 
-            if (username.equals("") || password.equals("")) {
-                String errorString = "ERROR : Please fill out both fields.";
+            if (username.equals("") || password.equals("") || confirmPassword.equals("")) {
+                String errorString = "ERROR : Please fill out all fields.";
                 JOptionPane.showMessageDialog(null, errorString, "Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }
-
+            if (!confirmPassword.equals(password)){
+                String errorString = "ERROR : Password fields do not match.";
+                JOptionPane.showMessageDialog(null, errorString, "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            if (username.length() > 30 || password.length() > 30 ) {
+                String errorString = "ERROR : Both username and password cannot be greater than 30 characters.";
+                JOptionPane.showMessageDialog(null, errorString, "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            if (username.equals("[DELETED USER]")) {
+                String errorString = "ERROR: Name not allowed";
+                JOptionPane.showMessageDialog(null, errorString, "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
             if (Database.select("users", "name", username)!= null) {
                 String errorString = "ERROR : Username unavailable, please try again.";
-                JOptionPane.showMessageDialog(null, errorString, "Error", JOptionPane.ERROR_MESSAGE);
-                return;
-            } else if (username.trim().equals("") || password.trim().equals("")) {
-                String errorString = "ERROR : Username and/or password fields must be filled in. Please try again.";
-                JOptionPane.showMessageDialog(null, errorString, "Error", JOptionPane.ERROR_MESSAGE);
-                return;
-            } else if (!username.matches("[a-zA-Z0-9]+") || !password.matches("[a-zA-Z0-9]+")) {
-                String errorString = "ERROR : Username or password used illegal character. Please try again without a space.";
                 JOptionPane.showMessageDialog(null, errorString, "Error", JOptionPane.ERROR_MESSAGE);
                 return;
             } else {
@@ -330,7 +365,7 @@ public class enterWindow extends JFrame{
             this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
             Object[] options = {"Room Browser", "Manage Account","Logout"};
-            int choice = JOptionPane.showOptionDialog(this,
+            int choice = userOptionPane.showOptionDialog(this,
                     "Welcome, " + currentUser + "!\nPlease select from the following options:",
                     "Deez Nutz Inc - Main View.",
                     JOptionPane.DEFAULT_OPTION,
@@ -338,6 +373,15 @@ public class enterWindow extends JFrame{
                     imageCollection.mainIcon,
                     options,
                     options[0]);
+
+            addWindowListener(new WindowAdapter() {
+                @Override
+                public void windowClosing(WindowEvent e) {
+                    // Custom action on JOptionPane closure
+                    System.exit(0);
+                }
+            });
+
             //display list of options
             switch (choice){
                 case 0:
@@ -368,7 +412,7 @@ public class enterWindow extends JFrame{
     public accountView() {
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         Object[] options = {"Back To Main View","Change Username","Change Password","Delete Account"};
-        int choice = JOptionPane.showOptionDialog(this,
+        int choice = userOptionPane.showOptionDialog(this,
                 "Please select from the following options:",
                 "Deez Nutz Inc - Account Management",
                 JOptionPane.DEFAULT_OPTION,
@@ -376,6 +420,18 @@ public class enterWindow extends JFrame{
                 imageCollection.settingsIcon,
                 options,
                 options[0]);
+
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                // Custom action on JOptionPane closure
+                new enterWindow.mainView();
+                dispose();
+//                System.exit(0);
+            }
+        });
+
+
         pack();
         //display list of options
         switch (choice) {
