@@ -15,8 +15,8 @@ public class chatWindow extends JFrame {
     Timer chatTimer;
 
     Clip chime;
-    private JTextArea messageArea;
-    private JTextField inputField;
+    private final JTextArea messageArea;
+    private final JTextField inputField;
 
     JList<String> userList;
 
@@ -63,8 +63,13 @@ public class chatWindow extends JFrame {
                 JOptionPane.showMessageDialog(null, errorString, "Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }
-            if (!chatroomName.matches("[a-zA-Z0-9]+")) {
-                String errorString = "ERROR: Please, no weird symbols. Try another name.";
+            if (chatroomName.length() > 30) {
+                String errorString = "ERROR : Name cannot be greater than 30 characters.";
+                JOptionPane.showMessageDialog(null, errorString, "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            if (!chatroomName.matches("[a-z0-9]+")) {
+                String errorString = "ERROR: The chat room name must only contain lowercase letters and numbers.";
                 JOptionPane.showMessageDialog(null, errorString, "Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }
@@ -170,30 +175,41 @@ public class chatWindow extends JFrame {
 //        messageArea.append(currentUser + ": " + message + "\n");
         if (message.equals("") || message.replaceAll("\\s", "").equals("")){
             messageArea.append("ERROR: Please send an actual message and not blank space.\n");
-            return;
         }
         else {
-            if (message.length() > 50) {
-                messageArea.append("ERROR: Your message is too long, please shorten it.\n");
-            }
-            else if (message.charAt(0) == '/') {
-                if (message.equals("/help")) {
-                    messageArea.append("Valid chat commands include:\n     /help\n     /list\n     /history\n     /leave\n");
-                } else if (message.equals("/list")) {
-                    messageArea.append("-----USERLIST-----\n");
-                    for (String userName : Database.printActiveUsers(currentChatroom)) {
-                        messageArea.append(userName + "\n");
+            if (message.charAt(0) == '/') {
+                switch (message) {
+                    case "/help" : {
+                            messageArea.append("Valid chat commands include:\n/help\n/list\n/history\n/leave\n");
+                            break;
+
                     }
-                } else if (message.equals("/history")) {
-                    messageArea.append("-----HISTORY------\n");
-                    for (String chatMessage : Database.getMessages(currentChatroom)) {
-                        messageArea.append(chatMessage + "\n");
+                    case "/list" : {
+                        messageArea.append("-----USERLIST-----\n");
+                        for (String userName : Database.printActiveUsers(currentChatroom)) {
+                            messageArea.append(userName + "\n");
+                        }
+                        break;
                     }
-                } else if (message.equals("/leave")) {
-                    exit(currentUser);
-                } else {
-                    messageArea.append("ERROR: Unknown command.\n Use /help for a list of commands.\n");
+                    case "/history" : {
+                        messageArea.append("-----HISTORY------\n");
+                        for (String chatMessage : Database.getMessages(currentChatroom)) {
+                            messageArea.append(chatMessage + "\n");
+                        }
+                        break;
+                    }
+                    case "/leave" : {
+                        exit(currentUser);
+                        break;
+                    }
+                    default : {
+                        messageArea.append("ERROR: " + message + " is NOT a valid command. Use /help for a list of commands.\n");
+                        break;
+                    }
                 }
+            }
+            else if (message.length() > 50) {
+                messageArea.append("ERROR: Your message is too long, please shorten it.\n");
             }
             else {
                 LocalTime currentTime = LocalTime.now();
@@ -220,18 +236,13 @@ public class chatWindow extends JFrame {
 
         int activeUsers = Database.printActiveUsers(currentChatroom).size();
         String userNum;
-
         if(activeUsers != 1 ){
-            userNum = " - [" + activeUsers + "] users in room";
-        }
-        else if (activeUsers == 0){
-            userNum = " - no users in room, wait you're not supposed to see this...";
+            userNum = "[" + activeUsers + "] users in room";
         }
         else {
-            userNum = " - [" + activeUsers + "] user in room";
+            userNum = "[" + activeUsers + "] user in room";
         }
-
-        this.setTitle(currentUser + " - " + currentChatroom + userNum);
+        this.setTitle(currentUser + " - " + currentChatroom + " - " + userNum);
 
         String [] usersList = Database.printActiveUsers(currentChatroom).toArray(new String[0]);
 
