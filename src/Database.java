@@ -26,7 +26,7 @@ public class Database {
 	}
 
 
-    public static void connect(String tableName) throws Exception {
+    public static void connectLocal(String tableName) throws Exception {
         try {
             String url = "jdbc:postgresql://localhost/" + tableName + "?user=" + localHostInfo.getLocalUserName() + "&password=" + localHostInfo.getLocalPassword() +"&ssl=false";
             //TODO change parameters in localHostInfo.java to suit your localhost username and password
@@ -67,6 +67,24 @@ public class Database {
 			e.printStackTrace();
 			System.err.println(e.getClass().getName() + ": " + e.getMessage());
 			System.exit(0);
+		}
+	}
+	public static void deletedUserInit(){
+		try{
+			c.setAutoCommit(false);
+			stmt = c.createStatement();
+			String sql = "INSERT INTO USERS(name)VALUES('[DELETED USER]');" ;
+			stmt.executeUpdate(sql);
+			c.commit();
+			//System.out.println("User created :)");
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.err.println(e.getClass().getName() + ": " + e.getMessage());
+			System.exit(0);
+		}
+		finally {
+			deletedUserInit();
 		}
 	}
 	public static void deleteUsers(){
@@ -201,14 +219,12 @@ public class Database {
 		}
 	}
 
-
-
 	public static void insert(String tableName, String username, String password){
 		try{
 			c.setAutoCommit(false);
 			stmt = c.createStatement();
 			String sql = "INSERT INTO " + tableName + "(name, password)" +
-					"VALUES('" + username + "', '" + password +"');" ;
+					"VALUES('" + encodeVal(username) + "', '" + encodeVal(password) +"');" ;
 			stmt.executeUpdate(sql);
 			c.commit();
 			//System.out.println("User created :)");
@@ -227,16 +243,6 @@ public class Database {
 	public static void insertMessage(String tableName, String username, String content, String chatName) {
 		//ENCODE SINGE QUOTES TO PREVENT SQL CONFUSION
 
-		String encodedContent = "";
-
-		for (int i = 0; i < content.length(); i++) {
-			if (content.charAt(i) == '\'') { // Check if the character is found in the string
-				encodedContent += "'" + '\'';
-			} else {
-				encodedContent += content.charAt(i);
-			}
-		}
-
 		try{
 			//this section generates the newest id for insertion
 			int startingId = 1;
@@ -248,7 +254,7 @@ public class Database {
 			c.setAutoCommit(false);
 			stmt = c.createStatement();			
 			String sql = "INSERT INTO " + tableName + "(username, chatname, content, id)" +
-					" VALUES('" + username + "', '" + chatName + "', '" + encodedContent + "', " + startingId +");" ;
+					" VALUES('" + encodeVal(username) + "', '" + encodeVal(chatName) + "', '" + encodeVal(content) + "', " + startingId +");" ;
 			stmt.executeUpdate(sql);
 			c.commit();
 			Main.currentKnownMessages++; //we don't want the print new messages to print their messages that they sent
@@ -269,7 +275,7 @@ public class Database {
 			c.setAutoCommit(false);
 			stmt = c.createStatement();			
 			String sql = "INSERT INTO " + tableName + "(username, chatname)" +
-					" VALUES('" + username + "', '" + chatName +"');" ;
+					" VALUES('" + encodeVal(username) + "', '" + encodeVal(chatName) +"');" ;
 			stmt.executeUpdate(sql);
 			c.commit();
 		} catch (Exception e) {
@@ -285,7 +291,7 @@ public class Database {
 			c.setAutoCommit(false);
 			stmt = c.createStatement();
 			String sql = "INSERT INTO users_online(username)" +
-					" VALUES('" + username + "');" ;
+					" VALUES('" + encodeVal(username) + "');" ;
 			stmt.executeUpdate(sql);
 			c.commit();
 		} catch (Exception e) {
@@ -299,7 +305,7 @@ public class Database {
 		try{
 			c.setAutoCommit(false);
 			stmt = c.createStatement();
-			String sql = "DELETE FROM " + tableName + " WHERE username = '" + username + "';";
+			String sql = "DELETE FROM " + tableName + " WHERE username = '" + encodeVal(username) + "';";
 			stmt.executeUpdate(sql);
 			c.commit();
 			System.out.println("DEBUG: Left Room Reference");
@@ -314,7 +320,7 @@ public class Database {
 		try{
 			c.setAutoCommit(false);
 			stmt = c.createStatement();
-			String sql = "DELETE FROM users WHERE name = '" + username + "';";
+			String sql = "DELETE FROM users WHERE name = '" + encodeVal(username) + "';";
 			stmt.executeUpdate(sql);
 			c.commit();
 			System.out.println("DEBUG: Left Room");
@@ -329,7 +335,7 @@ public class Database {
 		try{
 			c.setAutoCommit(false);
 			stmt = c.createStatement();
-			String sql = "DELETE FROM " + tableName + " WHERE chatname = '" + roomname + "';";
+			String sql = "DELETE FROM " + tableName + " WHERE chatname = '" + encodeVal(roomname) + "';";
 			stmt.executeUpdate(sql);
 			c.commit();
 			System.out.println("DEBUG: Deleted Room");
@@ -344,7 +350,7 @@ public class Database {
 		try{
 			c.setAutoCommit(false);
 			stmt = c.createStatement();
-			String sql = "DELETE FROM chatroom WHERE name = '" + roomname + "';";
+			String sql = "DELETE FROM chatroom WHERE name = '" + encodeVal(roomname) + "';";
 			stmt.executeUpdate(sql);
 			c.commit();
 			System.out.println("DEBUG: Deleted Room");
@@ -362,7 +368,23 @@ public class Database {
 		try{
 			c.setAutoCommit(false);
 			stmt = c.createStatement();
-			String sql = "UPDATE " + tableName + " set " + columnName + " = '" + newValue + "' where name = '" + oldValue + "';";
+			String sql = "UPDATE " + tableName + " set " + columnName + " = '" + encodeVal(newValue) + "' where name = '" + encodeVal(oldValue) + "';";
+			stmt.executeUpdate(sql);
+			c.commit();
+
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.err.println(e.getClass().getName() + ": " + e.getMessage());
+			System.exit(0);
+		}
+	}
+
+	public static void updateOtherWithoutID(String tableName, String columnName, String newValue, String oldValue){
+		try{
+			c.setAutoCommit(false);
+			stmt = c.createStatement();
+			String sql = "UPDATE " + tableName + " set " + columnName + " = '" + encodeVal(newValue) + "' where username = '" + encodeVal(oldValue) + "';";
 			stmt.executeUpdate(sql);
 			c.commit();
 
@@ -386,7 +408,7 @@ public class Database {
 		try {
 			stmt = c.createStatement();
 			String sql = "SELECT * FROM " + tableName + " WHERE "
-					+ columnName + " = '" + selection + "';";
+					+ columnName + " = '" + encodeVal(selection) + "';";
 			//System.out.println(sql);
 			ResultSet rs = stmt.executeQuery(sql);
 			//MULTIPURPOSE FOR ALL OBJ TYPEs
@@ -415,7 +437,7 @@ public class Database {
 		try {
 			stmt = c.createStatement();
 			String sql = "SELECT password FROM " + tableName + " WHERE "
-					+ columnName + " = '" + selection + "';";
+					+ columnName + " = '" + encodeVal(selection) + "';";
 			//System.out.println(sql);
 			ResultSet rs = stmt.executeQuery(sql);
 			//MULTIPURPOSE FOR ALL OBJ TYPEs
@@ -437,11 +459,12 @@ public class Database {
 	}
 	
 	public static void insertChatroom(String tableName, String chatName) {
+
 		try {
 			c.setAutoCommit(false);
 			stmt = c.createStatement();
 			String sql = "INSERT INTO " + tableName + "(name)" +
-					"VALUES('" + chatName + "');";
+					"VALUES('" + encodeVal(chatName) + "');";
 			stmt.executeUpdate(sql);
 			c.commit();
 		} catch (Exception e) {
@@ -481,7 +504,7 @@ public class Database {
 		try {
 			stmt = c.createStatement();
 			String sql = "SELECT username,content FROM users_messages WHERE id "
-					+ " = '" + id + "' and chatname = '" + chatName + "';";
+					+ " = '" + id + "' and chatname = '" + encodeVal(chatName) + "';";
 			//System.out.println(sql);
 			ResultSet rs = stmt.executeQuery(sql);
 			while (rs.next()) {
@@ -516,7 +539,7 @@ public class Database {
 		try {
 			stmt = c.createStatement();
 			String sql = "SELECT username FROM users_chatroom WHERE chatname "
-					+ " = '" + chatName + "';";
+					+ " = '" + encodeVal(chatName) + "';";
 			//System.out.println(sql);
 			ResultSet rs = stmt.executeQuery(sql);
 			while (rs.next()) {
@@ -599,7 +622,7 @@ public class Database {
 
 		try {
 			stmt = c.createStatement();
-			String sql = "select id from users_messages where chatname = '" + chatName + "'" +
+			String sql = "select id from users_messages where chatname = '" + encodeVal(chatName) + "'" +
 					"order by id ASC limit 1";
 			//System.out.println(sql);
 			ResultSet rs = stmt.executeQuery(sql);
@@ -627,7 +650,7 @@ public class Database {
 
 		try {
 			stmt = c.createStatement();
-			String sql = "select id from users_messages where chatname = '" + chatName + "'" +
+			String sql = "select id from users_messages where chatname = '" + encodeVal(chatName) + "'" +
 					" and id > " + currentId + " order by id ASC limit 1";
 			//System.out.println(sql);
 			ResultSet rs = stmt.executeQuery(sql);
@@ -648,10 +671,17 @@ public class Database {
 			return desiredObj;
 		}
 	}
-	public class LoadedList{
-		public LoadedList(){
+	public static String encodeVal (String ogString){
+		String encodedContent = "";
 
+		for (int i = 0; i < ogString.length(); i++) {
+			if (ogString.charAt(i) == '\'') { // Check if the character is found in the string
+				encodedContent += "'" + '\'';
+			} else {
+				encodedContent += ogString.charAt(i);
+			}
 		}
+		return  encodedContent;
 	}
 	
 	public static ArrayList<String> printNewMessages(String chatName) {
@@ -662,7 +692,7 @@ public class Database {
 
 		try {
 			stmt = c.createStatement();
-			String sql = "SELECT count(content) from users_messages where chatname = '" + chatName + "';";
+			String sql = "SELECT count(content) from users_messages where chatname = '" + encodeVal(chatName) + "';";
 			//System.out.println(sql);
 			ResultSet rs = stmt.executeQuery(sql);
 			//MULTIPURPOSE FOR ALL OBJ TYPEs
@@ -680,7 +710,7 @@ public class Database {
 			
 				stmt = null;
 				stmt = c.createStatement();
-				String sql2 = "select id from users_messages where chatname = '" + chatName + "';";
+				String sql2 = "select id from users_messages where chatname = '" + encodeVal(chatName) + "';";
 				rs = stmt.executeQuery(sql2);	
 				while (rs.next()) {
 					messages.add( (Integer)rs.getObject("id")  );
