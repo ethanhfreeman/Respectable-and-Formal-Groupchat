@@ -1,10 +1,6 @@
 import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
 
 public class enterWindow {
     static String currentUser = "";
@@ -14,16 +10,11 @@ public class enterWindow {
 
     private static JPasswordField confirmPasswordField;
 
-    static JOptionPane userOptionPane;
-
-
-
-
 
     public static class accountDeletionWindow extends JFrame {
         public accountDeletionWindow(){
             Object[] options = {"No, Do Not Delete My Account", "Yes, Delete My Account"};
-            int choice = userOptionPane.showOptionDialog(null,
+            int choice = JOptionPane.showOptionDialog(null,
                     "Are you sure you want to delete your account?",
                     "Deez Nutz Inc ChatRoom",
                     JOptionPane.DEFAULT_OPTION,
@@ -33,26 +24,26 @@ public class enterWindow {
                     options[0]);
 
 
-                    switch (choice){
-                        case 0:
-                            //user changes mind
-                            new enterWindow.accountView();
-                            dispose();
-                            break;
-                        case 1:
-                            //delete option selected
-                            Database.deleteUser("users_online", currentUser);
-                            Database.updateOtherWithoutID("users_messages", "username","[DELETED USER]", currentUser);
-                            Database.deleteUser("users_chatroom", currentUser);
-                            Database.deleteActualUser(currentUser);
-                            currentUser = "";
-                            dispose();
-                            String successMessage = "Account has been deleted. Returning to login window...";
-                            JOptionPane.showMessageDialog(null, successMessage, "Success", JOptionPane.INFORMATION_MESSAGE);
-                            new choiceMenu();
-                            dispose();
-                            break;
-                    }
+            switch (choice) {
+                case 0 -> {
+                    //user changes mind
+                    new accountView();
+                    dispose();
+                }
+                case 1 -> {
+                    //delete option selected
+                    Database.deleteUser("users_online", currentUser);
+                    Database.updateOtherWithoutID("users_messages", "username", "[DELETED USER]", currentUser);
+                    Database.deleteUser("users_chatroom", currentUser);
+                    Database.deleteActualUser(currentUser);
+                    currentUser = "";
+                    dispose();
+                    String successMessage = "Account has been deleted. Returning to login window...";
+                    JOptionPane.showMessageDialog(null, successMessage, "Success", JOptionPane.INFORMATION_MESSAGE);
+                    new choiceMenu();
+                    dispose();
+                }
+            }
         }
     }
     public static class passwordChangeWindow extends JFrame{
@@ -81,12 +72,10 @@ public class enterWindow {
             panel.add(changeButton);
 
             JButton goBackButton = new JButton("Go Back");
-            goBackButton.addActionListener(new ActionListener() {
-                   public void actionPerformed(ActionEvent e) {
-                       dispose();
-                       new accountView();
-                   }
-               }
+            goBackButton.addActionListener(e -> {
+                dispose();
+                new accountView();
+            }
             );
             panel.add(goBackButton);
 
@@ -144,12 +133,10 @@ public class enterWindow {
             panel.add(changeButton);
 
             JButton goBackButton = new JButton("Go Back");
-            goBackButton.addActionListener(new ActionListener() {
-                   public void actionPerformed(ActionEvent e) {
-                       dispose();
-                       new accountView();
-                   }
-               }
+            goBackButton.addActionListener(e -> {
+                dispose();
+                new accountView();
+            }
             );
             panel.add(goBackButton);
 
@@ -238,11 +225,9 @@ public class enterWindow {
             panel.add(registerButton);
 
             JButton goBackButton = new JButton("Go Back");
-            goBackButton.addActionListener(new ActionListener() {
-                public void actionPerformed(ActionEvent e) {
-                    dispose();
-                    new choiceMenu();
-                }
+            goBackButton.addActionListener(e -> {
+                dispose();
+                new choiceMenu();
             }
             );
 
@@ -280,7 +265,6 @@ public class enterWindow {
             if (Database.select("users", "name", username)!= null) {
                 String errorString = "ERROR : Username unavailable, please try again.";
                 JOptionPane.showMessageDialog(null, errorString, "Error", JOptionPane.ERROR_MESSAGE);
-                return;
             } else {
                 //insert into database
                 Database.insert("users", username, password);
@@ -318,12 +302,10 @@ public class enterWindow {
             panel.add(loginButton);
 
             JButton goBackButton = new JButton("Go Back");
-            goBackButton.addActionListener(new ActionListener() {
-                   public void actionPerformed(ActionEvent e) {
-                       dispose();
-                       new choiceMenu();
-                   }
-               }
+            goBackButton.addActionListener(e -> {
+                dispose();
+                new choiceMenu();
+            }
             );
 
             panel.add(goBackButton);
@@ -365,7 +347,7 @@ public class enterWindow {
             this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
             Object[] options = {"Room Browser", "Manage Account","Logout"};
-            int choice = userOptionPane.showOptionDialog(this,
+            int choice = JOptionPane.showOptionDialog(this,
                     "Welcome, " + currentUser + "!\nPlease select from the following options:",
                     "Deez Nutz Inc - Main View.",
                     JOptionPane.DEFAULT_OPTION,
@@ -383,25 +365,25 @@ public class enterWindow {
             });
 
             //display list of options
-            switch (choice){
-                case 0:
+            switch (choice) {
+                case 0 -> {
                     // room browser option selected
-                    new chatroomList(Database.getAllChatroomNames(),currentUser);
+                    new chatroomList(currentUser);
                     dispose();
-                    break;
-                case 1:
+                }
+                case 1 -> {
                     // Account management option selected
-                    new enterWindow.accountView();
+                    new accountView();
                     dispose();
-                    break;
-                case 2:
+                }
+                case 2 -> {
                     // Logout option selected
                     // CLEAR CURRENT USER
                     Database.deleteUser("users_online", currentUser);
                     currentUser = "";
                     new choiceMenu();
                     dispose();
-                    break;
+                }
             }
 
 
@@ -412,7 +394,7 @@ public class enterWindow {
     public accountView() {
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         Object[] options = {"Back To Main View","Change Username","Change Password","Delete Account"};
-        int choice = userOptionPane.showOptionDialog(this,
+        int choice = JOptionPane.showOptionDialog(this,
                 "Please select from the following options:",
                 "Deez Nutz Inc - Account Management",
                 JOptionPane.DEFAULT_OPTION,
@@ -435,27 +417,27 @@ public class enterWindow {
         pack();
         //display list of options
         switch (choice) {
-            case 0:
+            case 0 -> {
                 //Go Back
-                new enterWindow.mainView();
+                new mainView();
                 dispose();
-                break;
-            case 1:
+            }
+            case 1 -> {
                 // Change username
                 new usernameChangeWindow();
                 dispose();
-                break;
-            case 2:
+            }
+            case 2 -> {
                 // Change password
                 new passwordChangeWindow();
                 dispose();
-                break;
-            case 3:
+            }
+            case 3 -> {
                 //delete Account
                 new accountDeletionWindow();
                 dispose();
-                break;
             }
+        }
         }
     }
 }

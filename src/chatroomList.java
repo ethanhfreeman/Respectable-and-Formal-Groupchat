@@ -6,20 +6,17 @@ import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.util.ArrayList;
 public class chatroomList extends JFrame {
-    private static String currentUser;
 
     public static JList<String> chatroomList;
 
     public static JList<String> onlineList;
 
     public static chatWindow currentRoomView;
-    public static chatWindow.ChatroomCreater currentMadeRoomView;
 
     public static JFrame currentWindow;
     // list of chatrooms to display
 
-    public chatroomList(ArrayList<String> chatrooms, String currentUser) {
-        this.currentUser = currentUser;
+    public chatroomList(String currentUser) {
         currentWindow = this;
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         setSize(600, 300);
@@ -31,7 +28,6 @@ public class chatroomList extends JFrame {
                     currentRoomView.exit(currentUser);
                     currentRoomView.dispose();
                 }
-                dispose();
                 //exit
                 System.exit(0);
             }

@@ -1,9 +1,7 @@
-import javax.sound.sampled.*;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
-import java.io.File;
-import java.io.IOException;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
@@ -14,7 +12,6 @@ public class chatWindow extends JFrame {
 
     Timer chatTimer;
 
-    Clip chime;
     private final JTextArea messageArea;
     private final JTextField inputField;
 
@@ -41,12 +38,7 @@ public class chatWindow extends JFrame {
             panel.add(addButton);
 
             JButton goBackButton = new JButton("Go Back");
-            goBackButton.addActionListener(new ActionListener() {
-                   public void actionPerformed(ActionEvent e) {
-
-                       dispose();
-                   }
-               }
+            goBackButton.addActionListener(e -> dispose()
             );
             panel.add(goBackButton);
 
@@ -179,32 +171,27 @@ public class chatWindow extends JFrame {
         else {
             if (message.charAt(0) == '/') {
                 switch (message) {
-                    case "/help" : {
-                            messageArea.append("Valid chat commands include:\n/help\n/list\n/history\n/leave\n");
-                            break;
+                    case "/help" -> {
+                        messageArea.append("Valid chat commands include:\n/help\n/list\n/history\n/leave\n");
 
                     }
-                    case "/list" : {
+                    case "/list" -> {
                         messageArea.append("-----USERLIST-----\n");
                         for (String userName : Database.printActiveUsers(currentChatroom)) {
                             messageArea.append(userName + "\n");
                         }
-                        break;
                     }
-                    case "/history" : {
+                    case "/history" -> {
                         messageArea.append("-----HISTORY------\n");
                         for (String chatMessage : Database.getMessages(currentChatroom)) {
                             messageArea.append(chatMessage + "\n");
                         }
-                        break;
                     }
-                    case "/leave" : {
+                    case "/leave" -> {
                         exit(currentUser);
-                        break;
                     }
-                    default : {
+                    default -> {
                         messageArea.append("ERROR: " + message + " is NOT a valid command. Use /help for a list of commands.\n");
-                        break;
                     }
                 }
             }
