@@ -225,6 +225,7 @@ public class chatWindow extends JFrame {
         for (String message : Database.getMessages(currentChatroom)) {
             messageArea.append(message + "\n");
         }
+        messageArea.append("----- [ Welcome To " + currentChatroom + ", " + currentUser + " ] -----\n");
 
     }
 
