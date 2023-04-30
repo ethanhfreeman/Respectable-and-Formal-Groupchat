@@ -1,207 +1,121 @@
-import java.util.Scanner;
-public class Main {
-	public static Scanner scnr = new Scanner(System.in);
-    public static void main(String[] args) throws Exception {
-    	Database.connect("usersdb");
-    	Database.createTable();
-        printMainMenu();
-    }
-    
-    public static void printMainMenu() {
-    	System.out.println("-----------------------------------------");
-    	System.out.println("Welcome To the Deez Nutz inc ChatRoom.");
-    	System.out.println();
-    	System.out.println("Please select from the following options:");
-    	System.out.println("(R)egister, (L)ogin, (Q)uit");
-    	System.out.println("-----------------------------------------");
-    	System.out.println();
-    	System.out.print("-");
-    	String input = scnr.nextLine().toUpperCase();
-    	
-    	if (input.equals("R")) {
-    		register();
-    	} else if (input.equals("L")) {
-    		login();
-    	} else if (input.equals("Q")) {
-    		quit();
-    	} else {
-			//temp
-			System.out.println("Not a valid choice, restarting application");
-			printMainMenu();
-		}
-    }
-    
-    public static void register() {
-    	String username = "";
-    	String password = "";
-    	
-    	System.out.println();
-    	System.out.println("------------------------------------------");
-    	System.out.println("              REGISTRATION");
-    	System.out.print("Username: ");
-    	username = scnr.nextLine();
-    	System.out.print("Password: ");
-    	password = scnr.nextLine();
-    	if (username.equals("") || password.equals("")) {
-    		while (username.equals("") || password.equals("")) {
-    			System.out.println("ERROR : Please fill out both fields.");
-    			System.out.print("Username: ");
-    	    	username = scnr.nextLine();
-    	    	System.out.print("Password: ");
-    	    	password = scnr.nextLine();
-    		}
-    		
-    	}
-    	
-    	if (Database.select("userinfo", "username", username)!= null) {
-    		System.out.println("ERROR : Username unavailable, please try again.");
-    		register();
-    	} else if (username.trim().equals("") || password.trim().equals("")) {
-    		System.out.println("ERROR : Username and/or password fields must be filled in. Please try again.");
-    		register();
-    	} else if (username.contains(" ") || password.contains(" ")) {
-    		System.out.println("ERROR : Username or password used illegal character \" \", please try again without a space.");
-    		register();
-    	} else {
-    		Database.insert("userinfo", newId(), username, password);
-    		System.out.println("Please type (L) to LOGIN");
-    		System.out.println();
-    		System.out.print("-");
-    		String input = scnr.nextLine().toUpperCase();
-    		while (!input.equals("L")) {
-    			System.out.println("ERROR : Unrecognzied character, please try again.");
-    			System.out.print("-");
-    			input = scnr.nextLine().toUpperCase();
-    		}
-    		
-    		login();
-    	}
-    	
-    	
-    }
-    
-    
-    /*NEWID DOCUMENTATION
-     * this will generate the next valid id number for 
-     * the use of inserting in the databse
-     */
-    public static int newId() {
-    	int startingId = 1;
-    	
-    	while (Database.select("userinfo", "id", Integer.toString(startingId)) != null) {
-    	Database.select("userinfo", "id", Integer.toString(startingId++));
-    	}
-    	
-    	return startingId;
-    }
-    
-    public static void login() {
-    	
-    	
-    	System.out.println("------------------------------------------");
-    	System.out.println("                  LOGIN");
-    	System.out.print("Username: ");
-    	String username = scnr.nextLine();
-    	System.out.print("Password: ");
-    	String password = scnr.nextLine();
-    	
-    	if (Database.select("userinfo", "username", username)!= null) {
-    		if (password.equals(Database.selectPassword("userinfo", "username", username).toString().trim())) {
-    			System.out.println("Welcome " + username + "!");
-    			System.out.println();
-    			chatmenu();
-    			//this branch of the if statement will need to be updated for the chat room implementation.
-    		} else { //password was wrong, so they need to try again.
-    			System.out.println("ERROR : Incorrect password, please press (T) to try again,");
-    			System.out.print("        or (M) to return back to the main menu.");
-    			System.out.println();
-    			System.out.print("-");
-    			String input = scnr.next().toUpperCase();
-        		while (!(input.equals("T") || input.equals("M"))) {
-        			System.out.println("ERROR : Unrecognzied character, either push (T) to");
-        			System.out.println("      try again or (M) to return to the main menu.");
-        			System.out.print("-");
-        			input = scnr.next().toUpperCase();
-        		}
-        		if (input.toUpperCase().equals("T")) {
-        			scnr.nextLine();
-        			login();
-        		} else if (input.toUpperCase().equals("M")) {
-        			scnr.nextLine();
-        			printMainMenu();
-        		}
-        		
-    		}
-    	} else { 
-    		System.out.println("ERROR : Username doesn't exist. Press either (T) to");
-    		System.out.print("      try again or (M) to return to the main menu.");
-    		System.out.println();
-			System.out.print("-");
-			String input = scnr.next().toUpperCase();
-    		while (!(input.equals("T") || input.equals("M"))) {
-    			System.out.println("ERROR : Unrecognzied character, either push (T) to");
-    			System.out.println("      try again or (M) to return to the main menu.");
-    			System.out.print("-");
-    			input = scnr.nextLine().toUpperCase();
-    		}
-    		if (input.toUpperCase().equals("T")) {
-    			scnr.nextLine();
-    			login();
-    		} else if (input.toUpperCase().equals("M")) {
-    			scnr.nextLine();
-    			printMainMenu();
-    		}
-    	}
-    	
-    	
-    }
-    
-    public static void quit() {
-    	
-    }
-    
-    public static void chatmenu() {
-    	System.out.println("Please select from the following options:");
-    	System.out.println("(J)oin, (C)reate, (A)ccount, (L)ogout");
-    	System.out.println("-----------------------------------------");
-    	System.out.println();
-    	System.out.print("-");
-    	String input = scnr.nextLine().toUpperCase();
-    	
-    	while (!(input.equals("J") || input.equals("C") || input.equals("A") || input.equals("L"))) {
-			System.out.println("ERROR : Unrecognzied character, either push (J) to");
-			System.out.println("        join, (C) to create, (A) for account info");
-			System.out.println("        or (L) to logout. ");
-			System.out.print("-");
-			input = scnr.nextLine().toUpperCase();
-		}
-		if (input.toUpperCase().equals("J")) {
-//			scnr.nextLine();
-			joinmenu();
-		} else if (input.toUpperCase().equals("C")) {
-//			scnr.nextLine();
-			createmenu();
-		} else if (input.toUpperCase().equals("A")) {
-//			scnr.nextLine();
-			accountmenu();
-		} else if (input.toUpperCase().equals("L")) {
-//			scnr.nextLine();
-			printMainMenu();
-		}
-    }
+import javax.swing.*;
 
-	private static void accountmenu() {
-		// TODO Auto-generated method stub
-		System.out.println("DONE");
-	}
 
-	private static void createmenu() {
-		// TODO Auto-generated method stub
-		System.out.println("DONE");
-	}
-
-	private static void joinmenu() {
-		// TODO Auto-generated method stub
-		System.out.println("DONE");
-	}
+public class Main{
+    public static void main(String[] args) {
+            new mainGUIRuntime.onlineOrLocalWindow();
+    }
 }
+
+class mainGUIRuntime {
+    mainGUIRuntime() {
+            JFrame secondWindow = new JFrame();
+            secondWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            int dialogResult = JOptionPane.showConfirmDialog(secondWindow, "<html><font color='red'>DEBUG WARNING: Do you want to reset the internal database?</font></html>", "Confirmation", JOptionPane.YES_NO_OPTION);
+            if(dialogResult == JOptionPane.YES_OPTION){
+                Database.deleteUsersOnline();
+                Database.deleteUsersChatroom();
+                Database.deleteUserMessages();
+                Database.deleteChatroom();
+                Database.deleteUsers();
+
+                Database.createUsers();
+                Database.createChatroom();
+                Database.createUserMessages();
+                Database.createUsersChatroom();
+                Database.createUsersOnline();
+            }
+            new choiceMenu();
+    }
+
+    public static class onlineOrLocalWindow extends JFrame {
+        public onlineOrLocalWindow()  {
+            Object[] options = {"Connect to Online PSQL server (Available on ASU Internet)", "Connect to local PSQL server"};
+            int choice = JOptionPane.showOptionDialog(null,
+                    "Select your destination",
+                    "Deez Nutz Inc ChatRoom",
+                    JOptionPane.DEFAULT_OPTION,
+                    JOptionPane.INFORMATION_MESSAGE,
+                    null,
+                    options,
+                    options[0]);
+
+
+            switch (choice) {
+                case 0 -> {
+                    //user wants to connect online
+                    try {
+                        Database.connectOnline();
+                    } catch (Exception e) {
+                        String errorString = "Cannot connect to online PSQL Server, please check your connection";
+                        JOptionPane.showMessageDialog(null, errorString, "Error", JOptionPane.ERROR_MESSAGE);
+                        System.exit(0);
+                    }
+                    new mainGUIRuntime();
+                    dispose();
+                }
+                case 1 -> new connection();
+            }
+        }
+    }
+    public static class connection extends JFrame {
+        public connection() {
+                super("Enter PSQL connection parameters");
+                setSize(350, 275);
+                setLocationRelativeTo(null);
+                JPanel urlPanel = new JPanel();
+                JLabel urlLabel = new JLabel("Enter URL:");
+                JTextField urlField = new JTextField(25);
+                JLabel dbLabel = new JLabel("Enter database name");
+                JTextField dbField = new JTextField(25);
+                JLabel userLabel = new JLabel("Enter database username");
+                JTextField userField = new JTextField(25);
+                JLabel passwordLabel = new JLabel("Enter database password");
+                JTextField passwordField = new JPasswordField(25);
+
+
+            JButton connectButton = new JButton("Connect");
+                connectButton.addActionListener(e -> {
+                    // Connect to the PSQL URL here
+                    String url = urlField.getText();
+                    String dbName = dbField.getText();
+                    String user = userField.getText();
+                    String password = passwordField.getText();
+
+                    if(url.equals("") || dbName.equals("") || user.equals("") || password.equals("")){
+                        String errorString = "Please fill in all fields";
+                        JOptionPane.showMessageDialog(null, errorString, "Error", JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+                    try {
+                        Database.connectLocal(url,dbName, user, password);
+                    } catch (Exception ex) {
+                        String errorString = "Cannot connect, please check all fields";
+                        JOptionPane.showMessageDialog(null, errorString, "Error", JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+                    dispose();
+                    new mainGUIRuntime();
+                });
+                JButton goBackButton = new JButton("Go Back");
+                goBackButton.addActionListener(e -> {
+                            dispose();
+                                new onlineOrLocalWindow();
+                        }
+                );
+                urlPanel.add(urlLabel);
+                urlPanel.add(urlField);
+                urlPanel.add(dbLabel);
+                urlPanel.add(dbField);
+                urlPanel.add(userLabel);
+                urlPanel.add(userField);
+                urlPanel.add(passwordLabel);
+                urlPanel.add(passwordField);
+                urlPanel.add(connectButton);
+                urlPanel.add(goBackButton);
+                add(urlPanel);
+                setVisible(true);
+
+            }
+        }
+    }
