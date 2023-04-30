@@ -6,18 +6,12 @@ import java.awt.event.ActionListener;
 
 public class Main{
     public static void main(String[] args) {
-        try {
             new mainGUIRuntime.onlineOrLocalWindow();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-
     }
 }
 
 class mainGUIRuntime {
     mainGUIRuntime() {
-        try{
             JFrame secondWindow = new JFrame();
             secondWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             int dialogResult = JOptionPane.showConfirmDialog(secondWindow, "<html><font color='red'>DEBUG WARNING: Do you want to reset the internal database?</font></html>", "Confirmation", JOptionPane.YES_NO_OPTION);
@@ -34,16 +28,7 @@ class mainGUIRuntime {
                 Database.createUsersChatroom();
                 Database.createUsersOnline();
             }
-        }
-        catch(Exception e) {
-            String errorString = "Cannot connect to and/or modify PSQL Server, please check your connection";
-            JOptionPane.showMessageDialog(null, errorString, "Error", JOptionPane.ERROR_MESSAGE);
-            System.exit(0);
-        }
-        finally {
             new choiceMenu();
-        }
-
     }
 
     public static class onlineOrLocalWindow extends JFrame {
