@@ -62,6 +62,7 @@ class mainGUIRuntime {
         public connection() {
                 super("Enter PSQL connection parameters");
                 setSize(350, 275);
+                setLocationRelativeTo(null);
                 JPanel urlPanel = new JPanel();
                 JLabel urlLabel = new JLabel("Enter URL:");
                 JTextField urlField = new JTextField(25);
