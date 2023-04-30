@@ -54,16 +54,10 @@ class mainGUIRuntime {
                     new mainGUIRuntime();
                     dispose();
                 }
-                case 1 -> {
-                    new connection();
-                }
+                case 1 -> new connection();
             }
         }
     }
-
-
-
-
     public static class connection extends JFrame {
         public connection() {
                 super("Enter PSQL connection parameters");
