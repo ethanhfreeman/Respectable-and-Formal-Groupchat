@@ -1,7 +1,4 @@
-
 import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 
 public class Main{
@@ -83,29 +80,27 @@ class mainGUIRuntime {
 
 
             JButton connectButton = new JButton("Connect");
-                connectButton.addActionListener(new ActionListener() {
-                    public void actionPerformed(ActionEvent e) {
-                        // Connect to the PSQL URL here
-                        String url = urlField.getText();
-                        String dbName = dbField.getText();
-                        String user = userField.getText();
-                        String password = passwordField.getText();
+                connectButton.addActionListener(e -> {
+                    // Connect to the PSQL URL here
+                    String url = urlField.getText();
+                    String dbName = dbField.getText();
+                    String user = userField.getText();
+                    String password = passwordField.getText();
 
-                        if(url.equals("") || dbName.equals("") || user.equals("") || password.equals("")){
-                            String errorString = "Please fill in all fields";
-                            JOptionPane.showMessageDialog(null, errorString, "Error", JOptionPane.ERROR_MESSAGE);
-                            return;
-                        }
-                        try {
-                            Database.connectLocal(url,dbName, user, password);
-                        } catch (Exception ex) {
-                            String errorString = "Cannot connect, please check all fields";
-                            JOptionPane.showMessageDialog(null, errorString, "Error", JOptionPane.ERROR_MESSAGE);
-                            return;
-                        }
-                        dispose();
-                        new mainGUIRuntime();
+                    if(url.equals("") || dbName.equals("") || user.equals("") || password.equals("")){
+                        String errorString = "Please fill in all fields";
+                        JOptionPane.showMessageDialog(null, errorString, "Error", JOptionPane.ERROR_MESSAGE);
+                        return;
                     }
+                    try {
+                        Database.connectLocal(url,dbName, user, password);
+                    } catch (Exception ex) {
+                        String errorString = "Cannot connect, please check all fields";
+                        JOptionPane.showMessageDialog(null, errorString, "Error", JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+                    dispose();
+                    new mainGUIRuntime();
                 });
                 JButton goBackButton = new JButton("Go Back");
                 goBackButton.addActionListener(e -> {
