@@ -1,6 +1,5 @@
 
 import java.sql.*;
-import java.util.Locale;
 import java.util.ArrayList;
 public class Database {
 
@@ -10,7 +9,7 @@ public class Database {
 	public static int loaded;
 
 
-	public static void connectOnline() throws Exception {
+	public static void connectOnline() throws Exception{
 
 		try {
 			String url = "jdbc:postgresql://dpg-ch4l47ss3fvjtidtvj30-a.oregon-postgres.render.com:5432/usersdb_8irl";
@@ -26,9 +25,8 @@ public class Database {
 	}
 
 
-    public static void connectLocal(String tableName) throws Exception {
-        try {
-            String url = "jdbc:postgresql://localhost/" + tableName + "?user=" + localHostInfo.getLocalUserName() + "&password=" + localHostInfo.getLocalPassword() +"&ssl=false";
+    public static void connectLocal(String url, String databaseName, String user, String password) throws Exception{
+            String completeUrl = "jdbc:postgresql://" + url +"/" + databaseName + "?user=" + user + "&password=" + password +"&ssl=false";
             //TODO change parameters in localHostInfo.java to suit your localhost username and password
             /*
              * Above, you need to insert the "tableName" portion of the url
@@ -37,14 +35,7 @@ public class Database {
              * This being specified to tableName, essentially does  "\c tableName" and then the subsequent
              * methods like 'select()' work.
              */
-            c = DriverManager.getConnection(url);
-           // System.out.println("Connected :)"); this is annoying asl
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.err.println(e.getClass().getName() + ": " + e.getMessage());
-            System.exit(0);
-        }
-
+            c = DriverManager.getConnection(completeUrl);
     }
 /*
  * ****CREATETABLE DOCUMENTATION ****
@@ -257,7 +248,7 @@ public class Database {
 					" VALUES('" + encodeVal(username) + "', '" + encodeVal(chatName) + "', '" + encodeVal(content) + "', " + startingId +");" ;
 			stmt.executeUpdate(sql);
 			c.commit();
-			Main.currentKnownMessages++; //we don't want the print new messages to print their messages that they sent
+			mainCommandLine.currentKnownMessages++; //we don't want the print new messages to print their messages that they sent
 			
 
 		} catch (Exception e) {
