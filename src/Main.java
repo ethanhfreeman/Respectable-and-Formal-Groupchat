@@ -49,7 +49,7 @@ class mainGUIRuntime {
                     } catch (Exception e) {
                         String errorString = "Cannot connect to online PSQL Server, please check your connection";
                         JOptionPane.showMessageDialog(null, errorString, "Error", JOptionPane.ERROR_MESSAGE);
-                        System.exit(0);
+                        new onlineOrLocalWindow();
                     }
                     new mainGUIRuntime();
                     dispose();

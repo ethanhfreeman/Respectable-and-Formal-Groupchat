@@ -4,6 +4,8 @@
     <root id="archive" name="Final-Proj.jar">
       <element id="module-output" name="Final-Proj" />
       <element id="extracted-dir" path="$PROJECT_DIR$/../javaJar/postgresql-42.6.0.jar" path-in-jar="/" />
+      <element id="file-copy" path="$PROJECT_DIR$/src/cog_wheel.png" />
+      <element id="file-copy" path="$PROJECT_DIR$/src/deez.png" />
     </root>
   </artifact>
 </component>
