@@ -176,15 +176,15 @@ public class chatroomList extends JFrame {
 
         switch (onlineNum) {
             case (0) : {
-                userNum = "No one online :(";
+                userNum = "No one in a room :(";
                 break;
             }
             case (1) : {
-                userNum = "[" + onlineNum + "] user online";
+                userNum = "[" + onlineNum + "] user in a room";
                 break;
             }
             default: {
-                userNum = "[" + onlineNum + "] users online";
+                userNum = "[" + onlineNum + "] users in a room";
                 break;
             }
         }
