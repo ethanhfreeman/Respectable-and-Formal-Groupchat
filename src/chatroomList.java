@@ -2,6 +2,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.ArrayList;
+
 public class chatroomList extends JFrame {
 
     public static JList<String> chatroomList;
@@ -73,9 +75,18 @@ public class chatroomList extends JFrame {
                     currentRoomView.dispose();
                 }
                 Database.deleteUser("users_chatroom", currentUser);
-                Database.insertUserToChatroom("users_chatroom", currentUser, selectedChatroom);
-                refresh();
-                currentRoomView = new chatWindow(selectedChatroom, currentUser);
+                //check to make sure chatroom still exists
+                ArrayList<String> currentRooms = Database.getAllChatroomNames();
+                if (!currentRooms.contains(selectedChatroom)){
+                    String errorString = "ERROR: Chatroom no longer exists";
+                    JOptionPane.showMessageDialog(null, errorString, "Error", JOptionPane.ERROR_MESSAGE);
+                    refresh();
+                }
+                else {
+                    Database.insertUserToChatroom("users_chatroom", currentUser, selectedChatroom);
+                    refresh();
+                    currentRoomView = new chatWindow(selectedChatroom, currentUser);
+                }
             }
         });
 
