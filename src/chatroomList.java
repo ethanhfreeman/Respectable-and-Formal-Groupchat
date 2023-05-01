@@ -1,10 +1,7 @@
-
-import java.awt.event.*;
 import javax.swing.*;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import java.awt.*;
-import java.util.ArrayList;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 public class chatroomList extends JFrame {
 
     public static JList<String> chatroomList;
@@ -37,30 +34,27 @@ public class chatroomList extends JFrame {
         JScrollPane userPane = new JScrollPane(onlineList);
         chatroomList = new JList<>(new DefaultListModel<>());
         JScrollPane chatPane = new JScrollPane(chatroomList);
-        chatroomList.addListSelectionListener(new ListSelectionListener() {
-            @Override
-            public void valueChanged(ListSelectionEvent e) {
-                if (!e.getValueIsAdjusting()) {
-                    // Get the selected item from the list
-                    String selected = chatroomList.getSelectedValue();
+        chatroomList.addListSelectionListener(e -> {
+            if (!e.getValueIsAdjusting()) {
+                // Get the selected item from the list
+                String selected = chatroomList.getSelectedValue();
 
-                    // Update the label based on the selection
-                    if (selected != null) {
-                        String [] usersList = Database.printActiveUsers(chatroomList.getSelectedValue()).toArray(new String[0]);
+                // Update the label based on the selection
+                if (selected != null) {
+                    String [] usersList = Database.printActiveUsers(chatroomList.getSelectedValue()).toArray(new String[0]);
 
-                        for (int i = 0; i < usersList.length; ++i){
-                            if (usersList[i].equals(currentUser)){
-                                usersList[i] += " (me)";
-                            }
+                    for (int i = 0; i < usersList.length; ++i){
+                        if (usersList[i].equals(currentUser)){
+                            usersList[i] += " (me)";
                         }
-
-                        onlineList.setListData(usersList);
-
                     }
+
+                    onlineList.setListData(usersList);
+
                 }
-
-
             }
+
+
         });
 
         //Button and panel grid
@@ -107,25 +101,21 @@ public class chatroomList extends JFrame {
         refreshButton.addActionListener(e -> refresh());
 
         JButton goBackButton = new JButton("Go Back");
-        goBackButton.addActionListener(new ActionListener() {
-               public void actionPerformed(ActionEvent e) {
-                   if (currentRoomView != null) {
-                       currentRoomView.exit(currentUser);
-                       currentRoomView.dispose();
-                   }
-                   dispose();
-                   new enterWindow.mainView();
-               }
-           }
+        goBackButton.addActionListener(e -> {
+            if (currentRoomView != null) {
+                currentRoomView.exit(currentUser);
+                currentRoomView.dispose();
+            }
+            dispose();
+            new enterWindow.mainView();
+        }
         );
 
         JButton createButton = new JButton("Create New Room");
-        createButton.addActionListener(new ActionListener() {
-               public void actionPerformed(ActionEvent e) {
-                   new chatWindow.ChatroomCreater(currentUser);
-                   refresh();
-               }
-           }
+        createButton.addActionListener(e -> {
+            new chatWindow.ChatroomCreater(currentUser);
+            refresh();
+        }
         );
         JLabel userLabel = new JLabel("Users Inside:");
         JLabel roomLabel = new JLabel("Rooms:");
@@ -140,13 +130,6 @@ public class chatroomList extends JFrame {
         windowNorth.add(refreshButton);
         windowNorth.add(goBackButton);
 
-//        JPanel userLayout = new JPanel();
-//        userLayout.add(userLabel, BorderLayout.PAGE_START);
-//        userLayout.add(userPane, BorderLayout.PAGE_END);
-
-//        JPanel chatroomLayout = new JPanel();
-//        chatroomLayout.add(roomLabel, BorderLayout.PAGE_START);
-//        chatroomLayout.add(chatPane, BorderLayout.PAGE_END);
         windowCenter.add(chatPane);
         windowCenter.add(userPane);
 
@@ -167,25 +150,19 @@ public class chatroomList extends JFrame {
         int onlineNum = 0;
         String userNum;
         //TODO INCORPORATE ALT METHOD USING AN ADDITIONAL TABLE IN THE DATABASE LISTING WHICH USERS ARE ONLINE
-//        for (String user : Database.printOnlineUsers()){
-//            onlineNum += 1;
-//        }
         for (String chatroom: Database.getAllChatroomNames()){
             onlineNum += Database.printActiveUsers(chatroom).size();
         }
 
         switch (onlineNum) {
-            case (0) : {
+            case (0) -> {
                 userNum = "No one in a room :(";
-                break;
             }
-            case (1) : {
+            case (1) -> {
                 userNum = "[" + onlineNum + "] user in a room";
-                break;
             }
-            default: {
+            default -> {
                 userNum = "[" + onlineNum + "] users in a room";
-                break;
             }
         }
 
@@ -204,7 +181,6 @@ public class chatroomList extends JFrame {
                 userCounts[i] = Database.printActiveUsers(Database.getAllChatroomNames().get(i)).size();
             }
 
-            this.userCounts = userCounts;
         }
 
         public Component getListCellRendererComponent(JList<?> list, Object value, int i, boolean isSelected, boolean cellHasFocus) {
