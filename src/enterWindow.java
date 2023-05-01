@@ -16,7 +16,7 @@ public class enterWindow {
             Object[] options = {"No, Do Not Delete My Account", "Yes, Delete My Account"};
             int choice = JOptionPane.showOptionDialog(null,
                     "Are you sure you want to delete your account?",
-                    "Deez Nutz Inc ChatRoom",
+                    "Respectable And Formal Groupchat",
                     JOptionPane.DEFAULT_OPTION,
                     JOptionPane.INFORMATION_MESSAGE,
                     null,
@@ -48,7 +48,7 @@ public class enterWindow {
     }
     public static class passwordChangeWindow extends JFrame{
         public passwordChangeWindow(){
-            super("Deez Nutz Inc - Password Change");
+            super("RAFG - Password Change");
             setSize(300, 175);
             setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
             setLocationRelativeTo(null);
@@ -114,7 +114,7 @@ public class enterWindow {
 
     public static class usernameChangeWindow extends JFrame{
         public usernameChangeWindow(){
-                super("Deez Nutz Inc - Username Change");
+                super("RAFG - Username Change");
                 setSize(300, 125);
                 setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
                 setLocationRelativeTo(null);
@@ -200,7 +200,7 @@ public class enterWindow {
     public static class userRegisterWindow extends JFrame {
 
         public userRegisterWindow() {
-            super("Deez Nutz Inc - User Registration");
+            super("RAFG - User Registration");
             setSize(300, 225);
             setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             setLocationRelativeTo(null);
@@ -281,7 +281,7 @@ public class enterWindow {
     }
     public static class userLoginWindow extends JFrame {
         public userLoginWindow() {
-            super("Deez Nutz Inc - User Login");
+            super("RAFG - User Login");
             setSize(300, 175);
             setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             setLocationRelativeTo(null);
@@ -349,7 +349,7 @@ public class enterWindow {
             Object[] options = {"Room Browser", "Manage Account","Logout"};
             int choice = JOptionPane.showOptionDialog(this,
                     "Welcome, " + currentUser + "!\nPlease select from the following options:",
-                    "Deez Nutz Inc - Main View.",
+                    "Respectable And Formal Groupchat - Main View.",
                     JOptionPane.DEFAULT_OPTION,
                     JOptionPane.INFORMATION_MESSAGE,
                     imageCollection.mainIcon,
@@ -396,7 +396,7 @@ public class enterWindow {
         Object[] options = {"Back To Main View","Change Username","Change Password","Delete Account"};
         int choice = JOptionPane.showOptionDialog(this,
                 "Please select from the following options:",
-                "Deez Nutz Inc - Account Management",
+                "Respectable And Formal Groupchat - Account Management",
                 JOptionPane.DEFAULT_OPTION,
                 JOptionPane.INFORMATION_MESSAGE,
                 imageCollection.settingsIcon,

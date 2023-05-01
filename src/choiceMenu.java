@@ -5,7 +5,7 @@ public class choiceMenu {
         Object[] options = {"Register", "Login", "Quit"};
         int choice = JOptionPane.showOptionDialog(null,
                 "Please select the following:",
-                "Deez Nutz Inc ChatRoom",
+                "Respectable And Formal Groupchat",
                 JOptionPane.DEFAULT_OPTION,
                 JOptionPane.INFORMATION_MESSAGE,
                 imageCollection.mainIcon,
