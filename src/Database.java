@@ -241,7 +241,6 @@ public class Database {
 					" VALUES('" + encodeVal(username) + "', '" + encodeVal(chatName) + "', '" + encodeVal(content) + "', " + startingId +");" ;
 			stmt.executeUpdate(sql);
 			c.commit();
-			mainCommandLine.currentKnownMessages++; //we don't want the print new messages to print their messages that they sent
 			
 
 		} catch (Exception e) {
