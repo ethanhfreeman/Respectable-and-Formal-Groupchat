@@ -184,7 +184,6 @@ public class chatWindow extends JFrame {
                     case "/history" -> {
                         messageArea.append("-----HISTORY------\n");
                         for (String chatMessage : Database.getMessages(currentChatroom)) {
-                            Database.loaded++;
                             messageArea.append(chatMessage + "\n");
                         }
                     }
