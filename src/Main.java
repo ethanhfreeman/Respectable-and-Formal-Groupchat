@@ -33,7 +33,7 @@ class mainGUIRuntime {
             Object[] options = {"Connect to Online PSQL server (Available on ASU Internet)", "Connect to local PSQL server"};
             int choice = JOptionPane.showOptionDialog(null,
                     "Select your destination",
-                    "Deez Nutz Inc ChatRoom",
+                    "Respectable And Formal Groupchat",
                     JOptionPane.DEFAULT_OPTION,
                     JOptionPane.INFORMATION_MESSAGE,
                     null,
