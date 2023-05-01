@@ -107,6 +107,7 @@ public class enterWindow {
                 JOptionPane.showMessageDialog(null, errorString, "Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }
+            //TODO newpassword cannot be the same as old password idk im weird
             //Updates the users table to match the new password
             Database.updateWithoutID("users", "password", newPassword, currentUser);
             String successMessage = "Success! Password has been changed!";
