@@ -21,7 +21,7 @@ public class chatWindow extends JFrame {
         private static JTextField nameField;
 
         public ChatroomCreater(String incomingUser) {
-            super("Deez Nutz Inc - Chatroom Creater");
+            super("Respectable And Formal Groupchat - Chatroom Creater");
             setSize(400, 125);
             setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
             setLocationRelativeTo(null);
