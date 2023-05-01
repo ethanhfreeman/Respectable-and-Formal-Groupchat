@@ -102,6 +102,11 @@ public class enterWindow {
                 JOptionPane.showMessageDialog(null, errorString, "Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }
+            if (newPassword.contains(" ")){
+                String errorString = "ERROR : Password cannot have spaces.";
+                JOptionPane.showMessageDialog(null, errorString, "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
             //Updates the users table to match the new password
             Database.updateWithoutID("users", "password", newPassword, currentUser);
             String successMessage = "Success! Password has been changed!";
@@ -171,6 +176,11 @@ public class enterWindow {
             }
             if (username.equals("[DELETED USER]")) {
                 String errorString = "ERROR: Name not allowed";
+                JOptionPane.showMessageDialog(null, errorString, "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            if (username.contains(" ")){
+                String errorString = "ERROR : Changed username cannot have spaces.";
                 JOptionPane.showMessageDialog(null, errorString, "Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }
@@ -259,6 +269,11 @@ public class enterWindow {
             }
             if (username.equals("[DELETED USER]")) {
                 String errorString = "ERROR: Name not allowed";
+                JOptionPane.showMessageDialog(null, errorString, "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            if (username.contains(" ") || password.contains(" ")){
+                String errorString = "ERROR : Spaces are not allowed in username or password.";
                 JOptionPane.showMessageDialog(null, errorString, "Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }

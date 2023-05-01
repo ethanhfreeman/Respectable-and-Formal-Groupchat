@@ -80,13 +80,12 @@ public class chatroomList extends JFrame {
                 if (!currentRooms.contains(selectedChatroom)){
                     String errorString = "ERROR: Chatroom no longer exists";
                     JOptionPane.showMessageDialog(null, errorString, "Error", JOptionPane.ERROR_MESSAGE);
-                    refresh();
                 }
                 else {
                     Database.insertUserToChatroom("users_chatroom", currentUser, selectedChatroom);
-                    refresh();
                     currentRoomView = new chatWindow(selectedChatroom, currentUser);
                 }
+                refresh();
             }
         });
 
