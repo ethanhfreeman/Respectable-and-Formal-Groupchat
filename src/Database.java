@@ -10,17 +10,10 @@ public class Database {
 
 
 	public static void connectOnline() throws Exception{
-
-		try {
 			String url = "jdbc:postgresql://dpg-ch4l47ss3fvjtidtvj30-a.oregon-postgres.render.com:5432/usersdb_8irl";
 			String username = "usersdb_8irl_user";
 			String password = "zpmuiLSPLUw6sO8B0qojjHa3lB42bhLD";
 			c = DriverManager.getConnection(url, username, password);
-		} catch (Exception e) {
-			e.printStackTrace();
-			System.err.println(e.getClass().getName() + ": " + e.getMessage());
-			System.exit(0);
-		}
 
 	}
 
