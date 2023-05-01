@@ -20,7 +20,6 @@ public class Database {
 
     public static void connectLocal(String url, String databaseName, String user, String password) throws Exception{
             String completeUrl = "jdbc:postgresql://" + url +"/" + databaseName + "?user=" + user + "&password=" + password +"&ssl=false";
-            //TODO change parameters in localHostInfo.java to suit your localhost username and password
             /*
              * Above, you need to insert the "tableName" portion of the url
              * to specify the database in which you are looking to connect to
@@ -52,6 +51,10 @@ public class Database {
 			System.err.println(e.getClass().getName() + ": " + e.getMessage());
 			System.exit(0);
 		}
+		finally {
+			deletedUserInit();
+		}
+
 	}
 	public static void deletedUserInit(){
 		try{
@@ -66,9 +69,6 @@ public class Database {
 			e.printStackTrace();
 			System.err.println(e.getClass().getName() + ": " + e.getMessage());
 			System.exit(0);
-		}
-		finally {
-			deletedUserInit();
 		}
 	}
 	public static void deleteUsers(){
